@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nextBtn   = document.querySelector('.wizard-footer .next');
   const finishBtn = document.getElementById('finish');
   const backBtn   = document.querySelector('.back-btn');
+
   function showStep(n) {
     // Toggle active class
     steps.forEach(s =>

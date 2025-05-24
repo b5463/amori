@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block extra_css %}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+
+  <!-- SIDEBAR (same as admin.html) -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">CosyPOS Admin</div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin') }}"
+         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">
+        <span class="icon">🏠</span>Home
+      </a>
+      <a href="{{ url_for('upload') }}"
+         class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">
+        <span class="icon">✏️</span>Draw
+      </a>
+      <a href="{{ url_for('admin_ratings') }}"
+         class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">
+        <span class="icon">⭐</span>Manage Ratings
+      </a>
+      <a href="{{ url_for('guest_table') }}"
+         class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">
+        <span class="icon">👥</span>Guests
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN PANEL -->
+  <main class="admin-main">
+
+    <!-- CLEAR ALL BUTTON -->
+    <div class="controls">
+      <form action="{{ url_for('admin_clear_guests') }}" method="POST"
+            onsubmit="return confirm('Remove ALL guests?');">
+        <button type="submit" class="btn">Remove All Guests</button>
+      </form>
+    </div>
+
+    <!-- GUEST CARDS GRID -->
+    <div class="guest-cards">
+      {% set pastels = ['#CFDDBB','#E4CDED','#C2DBE9','#F1C8D0','#C9CAEF'] %}
+      {% for name, g in guests.items() %}
+      <div class="guest-card"
+           style="border-left-color:{{ pastels[loop.index0 % pastels|length] }}">
+        <h3>{{ name }}</h3>
+        <p><strong>Allergies:</strong> {{ g.allergies|join(', ') or '—' }}</p>
+        <p><strong>Avoid:</strong> {{ g.avoid or '—' }}</p>
+        <p><strong>Diet:</strong> {{ g.diet or '—' }}</p>
+        <p><strong>Drinks?</strong> {{ g.will_drink and 'Yes' or 'No' }}</p>
+        <p><strong>Intensity:</strong> {{ g.intensity or '—' }}</p>
+        <p><strong>Likes:</strong> {{ g.likes or '—' }}</p>
+        <p><strong>Notes:</strong> {{ g.notes or '—' }}</p>
+        <p><strong>Seating:</strong> {{ g.seating or '—' }}</p>
+        <p><strong>Assigned:</strong> {{ g.assigned_drink or '—' }}</p>
+        <div class="actions">
+          <form action="{{ url_for('admin_create_menu', name=name) }}" method="POST">
+            <button class="btn">Gen</button>
+          </form>
+          <form action="{{ url_for('admin_delete_menu', name=name) }}" method="POST">
+            <button class="btn">Clr</button>
+          </form>
+          <a href="{{ url_for('upload', guest=name) }}" class="btn">✏️</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </main>
+</div>
+{% endblock %}

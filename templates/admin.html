@@ -1,237 +1,178 @@
-{# templates/admin.html #}
 {% extends 'base.html' %}
-
 {% block extra_css %}
-  <link rel="stylesheet"
-        href="{{ url_for('static', filename='css/admin.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="admin-container">
+<div class="admin-layout">
 
-  <!-- ── TOP CONTROLS ──────────────────────────────────────────── -->
-  <div class="controls">
-    <a href="{{ url_for('admin_export') }}" class="controls__button">
-      Download JSON
-    </a>
-    <a href="{{ url_for('upload') }}" class="controls__button">
-      Draw
-    </a>
-    <form action="{{ url_for('upload') }}"
-          method="POST"
-          enctype="multipart/form-data"
-          class="controls__upload">
-      <button type="button"
-              class="controls__button no-reload"
-              onclick="document.getElementById('baseFile').click()">
-        Upload New Menu
-      </button>
-      <input id="baseFile" type="file"
-            name="file" accept="image/*"
-            onchange="this.form.submit()"
-            style="display:none">
-    </form>
-    <form action="{{ url_for('toggle_menu') }}"
-          method="POST">
-      <button type="submit" class="controls__button">
-        {{ 'Unpublish Current Menu' if menu_available else 'Publish Current Menu' }}
-      </button>
-    </form>
-    <form action="{{ url_for('admin_clear_guests') }}"
-          method="POST"
-          onsubmit="return confirm('Remove ALL guests?');">
-      <button type="submit"
-              class="controls__button removal no-reload">
-        Remove All Guests
-      </button>
-    </form>
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">CosyPOS Admin</div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin') }}"
+         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">
+        <span class="icon">🏠</span>Home
+      </a>
+      <a href="{{ url_for('upload') }}"
+         class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">
+        <span class="icon">✏️</span>Draw
+      </a>
+      <a href="{{ url_for('admin_ratings') }}"
+         class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">
+        <span class="icon">⭐</span>Manage Ratings
+      </a>
+      <a href="{{ url_for('guest_table') }}"
+         class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">
+        <span class="icon">👥</span>Guests
+      </a>
+    </nav>
+  </aside>
 
-    {# ⇒ New “Manage Ratings” button #}
-    <a href="{{ url_for('admin_ratings') }}"
-       class="controls__button highlight">
-      Manage Ratings
-    </a>
-  </div>
+  <!-- MAIN PANEL -->
+  <main class="admin-main">
 
+    <!-- TOP CONTROLS -->
+    <div class="controls">
+      <a href="{{ url_for('admin_export') }}" class="btn">Download JSON</a>
+      <form action="{{ url_for('upload') }}" method="POST"
+            enctype="multipart/form-data" class="inline-form">
+        <input id="baseFile" type="file" name="file" accept="image/*" hidden
+               onchange="this.form.submit()">
+        <button type="button" class="btn"
+                onclick="document.getElementById('baseFile').click()">
+          Upload New Menu
+        </button>
+      </form>
+      <form action="{{ url_for('toggle_menu') }}" method="POST"
+            class="inline-form">
+        <button type="submit" class="btn">
+          {{ 'Unpublish Menu' if menu_available else 'Publish Menu' }}
+        </button>
+      </form>
+    </div>
 
-  <!-- ── DRINK OPTIONS ────────────────────────────────────────── -->
-  <section class="drink-manager">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul class="flash-messages">
-          {% for cat, msg in messages %}
-            <li class="flash-{{cat}}">{{ msg }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    <!-- METRICS ROW -->
+    <section class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-title">Guests</div>
+        <div class="metric-value">{{ guests|length }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Surveys ≥5 steps</div>
+        <div class="metric-value">{{ completed_surveys }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Drinks</div>
+        <div class="metric-value">{{ settings.drink_options|length }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Last Upload</div>
+        <div class="metric-value">
+          {% if previews and previews[0].url %}
+            {{ previews[0].url.split('/')[-1] }}
+          {% else %}—{% endif %}
+        </div>
+      </div>
+    </section>
 
-    <form action="{{ url_for('add_drink') }}"
-          method="POST"
-          class="drink-form">
-      <input type="text" name="drink"
-             placeholder="New drink name…" required>
-      <button type="submit">Add</button>
-    </form>
+    <!-- SECTION TABS -->
+    <div class="admin-tabs">
+      <button class="tab-button active" data-tab="drinks">Drink Manager</button>
+      <button class="tab-button" data-tab="menus">Menu Previews</button>
+      <button class="tab-button" data-tab="courses">Courses</button>
+    </div>
 
-    {% if settings.drink_options %}
-      <details class="drink-details">
-        <summary>
-          Existing Drinks ({{ settings.drink_options|length }})
-        </summary>
-        <ul class="drink-list">
-          {% for d in settings.drink_options %}
+    <!-- TAB: DRINK MANAGER -->
+    <section id="drinks" class="tab-content active">
+      <div class="drink-manager">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flash-messages">
+              {% for cat, msg in messages %}
+                <li class="flash-{{cat}}">{{ msg }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('add_drink') }}" method="POST" class="drink-form">
+          <input type="text" name="drink" placeholder="New drink name…" required>
+          <button type="submit" class="btn">Add</button>
+        </form>
+
+        {% if settings.drink_options %}
+        <details class="drink-details">
+          <summary>Existing Drinks</summary>
+          <ul class="drink-list">
+            {% for d in settings.drink_options %}
             <li>
               {{ d }}
               <form action="{{ url_for('delete_drink', drink=d) }}"
-                    method="POST"
-                    class="inline-delete-form">
+                    method="POST" class="inline-delete-form">
                 <button class="inline-delete">×</button>
               </form>
             </li>
-          {% endfor %}
-        </ul>
-      </details>
-    {% else %}
-      <p class="none">No drinks yet.</p>
-    {% endif %}
-  </section>
+            {% endfor %}
+          </ul>
+        </details>
+        {% endif %}
+      </div>
+    </section>
 
-
-  <!-- ── RESPONSES PIVOT TABLE ───────────────────────────────── -->
-  <section class="responses-section">
-    <table class="responses-table">
-      <thead>
-        <tr>
-          <th></th>
-          {% for name in guests.keys() %}
-            <th>{{ name }}</th>
+    <!-- TAB: MENU PREVIEWS -->
+    <section id="menus" class="tab-content">
+      <div class="previews-section">
+        <div class="previews-grid">
+          {% for p in previews %}
+          <div class="preview">
+            <strong>{{ p.name }}</strong>
+            <img src="{{ p.url }}" alt="{{ p.name }} preview">
+          </div>
           {% endfor %}
-        </tr>
-      </thead>
-      <tbody>
-        <tr><th>Allergies</th>
-          {% for g in guests.values() %}
-            <td>{{ g.allergies|join(', ') or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Avoid / Can’t stand</th>
-          {% for g in guests.values() %}
-            <td>{{ g.avoid or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Diet</th>
-          {% for g in guests.values() %}
-            <td>{{ g.diet or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Drinks?</th>
-          {% for g in guests.values() %}
-            <td>{{ g.will_drink and 'Yes' or 'No' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Intensity</th>
-          {% for g in guests.values() %}
-            <td>{{ g.intensity or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Likes / Faves</th>
-          {% for g in guests.values() %}
-            <td>{{ g.likes or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Notes</th>
-          {% for g in guests.values() %}
-            <td>{{ g.notes or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Seating</th>
-          {% for g in guests.values() %}
-            <td>{{ g.seating or '—' }}</td>
-          {% endfor %}
-        </tr>
-        <tr><th>Assigned Drink</th>
-          {% for name,g in guests.items() %}
-            <td>
-              <select class="assign-drink"
-                      data-guest="{{ name }}">
-                <option value="">(None)</option>
-                {% for opt in settings.drink_options %}
-                  <option value="{{ opt }}"
-                    {% if g.assigned_drink==opt %}selected{% endif %}>
-                    {{ opt }}
-                  </option>
-                {% endfor %}
-              </select>
-            </td>
-          {% endfor %}
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr><th>Actions</th>
-          {% for name in guests.keys() %}
-            <td>
-              <div class="table-actions">
-                <form action="{{ url_for('admin_create_menu', name=name) }}"
-                      method="POST">
-                  <button>Gen</button>
-                </form>
-                <form action="{{ url_for('admin_delete_menu', name=name) }}"
-                      method="POST">
-                  <button>Clr</button>
-                </form>
-                <a href="{{ url_for('upload', guest=name) }}">
-                  <button type="button">✏️</button>
-                </a>
-              </div>
-            </td>
-          {% endfor %}
-        </tr>
-      </tfoot>
-    </table>
-  </section>
-
-
-  <!-- ── MENU PREVIEWS ──────────────────────────────────────── -->
-  <section class="menu-previews">
-    <div class="previews-grid">
-      {% for p in previews %}
-        <div class="preview">
-          <strong>{{ p.name }}</strong>
-          <img src="{{ p.url }}"
-               alt="{{ p.name }} preview">
         </div>
-      {% endfor %}
-    </div>
-  </section>
+      </div>
+    </section>
 
+    <!-- TAB: COURSES -->
+    <section id="courses" class="tab-content">
+      <div class="previews-section">
+        <div class="previews-grid">
+          {% for c in courses %}
+          <div class="preview">
+            <strong>Order {{ c.order }}</strong>
+            <div>{{ c.name }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+  </main>
 </div>
 {% endblock %}
-
-
 {% block extra_js %}
-  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
-  <script>
-    // auto‐dismiss flash messages
-    setTimeout(() => {
-      document.querySelectorAll('.flash-messages li')
-              .forEach(li => li.remove());
-    }, 1500);
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  // flash auto-clear
+  setTimeout(()=>{
+    document.querySelectorAll('.flash-messages li')
+            .forEach(li=>li.remove());
+  },1500);
 
-    // live‐reload images & table
-    socket.on('image_updated', () =>
-      setTimeout(() => location.reload(), 300)
-    );
+  // live image-refresh
+  socket.on('image_updated',()=>setTimeout(()=>location.reload(),300));
 
-    // reload after any top control or table change
-    document.querySelectorAll(
-      '.controls__button:not(.no-reload):not(.removal), \
-      .inline-delete, .drink-form button, .responses-table select'
-    ).forEach(el => {
-      const ev = el.tagName === 'SELECT' ? 'change' : 'click';
-      el.addEventListener(ev, () =>
-        setTimeout(() => location.reload(), 300)
-      );
+  // tabs
+  document.querySelectorAll('.tab-button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelector('.tab-button.active').classList.remove('active');
+      btn.classList.add('active');
+      document.querySelector('.tab-content.active').classList.remove('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
     });
-  </script>
+  });
+</script>
 {% endblock %}

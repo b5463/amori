@@ -1,220 +1,261 @@
-/* ── Admin Dashboard — iPad-friendly, no scroll ───────────────── */
-
-.admin-container {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
+:root {
+  --bg:         #111315;
+  --panel:      #111315;
+  --panel-alt:  #292C2D;
+  --border:     #676767;
+  --text:       #FFFFFF;
+  --text-muted: #767676;
+  --accent:     #D56363;
+  --radius:     8px;
+  --gap:        24px;
+  --btn-pad:    12px 24px;
 }
-h1 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
+
+/* ─── Layout ───────────────────────────────────────────────── */
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  background: var(--bg);
+}
+.admin-sidebar {
+  width: 240px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+.sidebar-logo {
+  padding: var(--gap);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-nav {
+  flex: 1;
+  padding: var(--gap) 0;
+}
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px var(--gap);
+  color: var(--text-muted);
+  text-decoration: none;
+  border-left: 4px solid transparent;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.sidebar-link .icon {
+  font-size: 1.2rem;
+}
+.sidebar-link:hover {
+  background: var(--panel-alt);
+  color: var(--text);
+}
+.sidebar-link.active {
+  background: var(--panel-alt);
+  color: var(--text);
+  border-left-color: var(--border);
 }
 
-/* — Toolbar Buttons — */
+/* ─── Main panel ───────────────────────────────────────────── */
+.admin-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--gap);
+  background: var(--bg);
+}
+
+/* ─── Controls / Top Buttons ───────────────────────────────── */
 .controls {
   display: flex;
-  flex-wrap: nowrap;      /* never wrap to a new line */
-  gap: 0.5rem;
-  overflow-x: auto;       /* horizontal scroll if too many buttons */
-  margin-bottom: 1.5rem;
-  -webkit-overflow-scrolling: touch; /* smooth scrolling on iPad */
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
 }
-.controls__button {
-  background: #d56363;
-  color: #fff;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  text-decoration: none;
+.btn {
   display: inline-flex;
   align-items: center;
-  flex-shrink: 0;
+  justify-content: center;
+  padding: var(--btn-pad);
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s;
 }
-.controls__button:hover {
-  background: #c45252;
+.btn:hover,
+.btn:focus {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
-.controls__button.removal {
-  background: #b33c3c;
-}
-.controls__button.removal:hover {
-  background: #9e2f2f;
+.inline-form {
+  margin: 0;
 }
 
-/* — Flash Messages — */
-.flash-messages {
-  list-style: none;
-  margin: 0 0 1rem;
-  padding: 0;
+/* ─── Metrics row ──────────────────────────────────────────── */
+.metrics-row {
+  display: flex;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
 }
-.flash-messages li {
-  padding: 0.5rem;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
+.metric-card {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  text-align: center;
 }
-.flash-success { background: #e6f4ea; color: #2d662d; }
-.flash-error   { background: #fdecea; color: #882626; }
+.metric-title {
+  font-size: .875rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.metric-value {
+  font-size: 1.5rem;
+  color: var(--text);
+  font-weight: 600;
+}
 
-/* — Drink Manager — */
+/* ─── Tabs ─────────────────────────────────────────────────── */
+.admin-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: var(--gap);
+}
+.tab-button {
+  flex: 1;
+  text-align: center;
+  padding: 12px 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.tab-button.active {
+  background: var(--panel-alt);
+  border-color: var(--border);
+}
+
+/* hide non-active */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ─── Drink Manager ───────────────────────────────────────── */
 .drink-manager {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.drink-manager h2 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  margin-bottom: var(--gap);
 }
 .drink-form {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 16px;
 }
-.drink-form input[name="drink"] {
+.drink-form input[type="text"] {
   flex: 1;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 12px;
 }
-.drink-form button {
-  background: #d56363;
-  color: #fff;
-  border: none;
-  padding: 0 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-/* Collapsible list of existing drinks */
 .drink-details summary {
   cursor: pointer;
-  font-weight: 600;
-  padding: 0.5rem;
-  background: #f7f1e7;
-  border-radius: 4px;
-  user-select: none;
-  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-top: var(--gap);
 }
 .drink-list {
   list-style: none;
-  margin: 0;
   padding: 0;
-  max-height: 150px;
-  overflow-y: auto;
-}
-.drink-details:not([open]) .drink-list {
-  display: none;
+  margin: 12px 0 0;
 }
 .drink-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.25rem 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
 }
 .inline-delete {
   background: none;
   border: none;
-  color: #d55;
+  color: var(--accent);
   font-size: 1.2rem;
   cursor: pointer;
 }
-.none {
-  font-style: italic;
-  color: #666;
-  margin: 0.5rem 0 0;
-}
 
-/* — Responses Table — */
-.responses-section {
-  margin-bottom: 2rem;
-  overflow-x: auto;
-}
-.responses-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.responses-table th,
-.responses-table td {
-  border: 1px solid #eee;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  text-align: center;
-  white-space: nowrap;
-}
-.responses-table th:first-child,
-.responses-table td:first-child {
-  text-align: left;
-  font-weight: 600;
-  background: #f7f1e7;
-}
-.assign-drink {
-  width: 100%;
-  padding: 0.25rem;
-}
-
-/* — Action Buttons in Table Footer — */
-.responses-table tfoot th,
-.responses-table tfoot td {
-  border: none;
-  padding-top: 1rem;
-}
-.table-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-}
-.table-actions button {
-  background: #d56363;
-  color: #fff;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.table-actions button:hover {
-  background: #c45252;
-}
-
-/* — Menu Previews — */
-.menu-previews {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.menu-previews h2 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
+/* ─── Previews Grid ───────────────────────────────────────── */
+.previews-section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  margin-bottom: var(--gap);
 }
 .previews-grid {
   display: flex;
-  gap: 1rem;
   flex-wrap: wrap;
+  gap: var(--gap);
 }
 .preview {
+  width: 160px;
   text-align: center;
-  flex: 1 1 120px;
 }
 .preview img {
   width: 100%;
-  max-width: 120px;
-  height: auto;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  display: block;
-  margin: 0 auto;
+  border-radius: var(--radius);
 }
 
-/* — Responsive — */
-@media (max-width: 768px) {
-  .controls { justify-content: center; }
-  .responses-section { overflow-x: auto; }
-  .preview { flex: 1 1 100px; }
+/* ─── Guest Table (shared) ────────────────────────────────── */
+.guest-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+  gap: var(--gap);
+  margin-top: var(--gap);
 }
+.guest-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  word-break: break-word;
+}
+.guest-card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.guest-card p {
+  margin: 4px 0;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+.guest-card .actions {
+  margin-top: var(--gap);
+  display: flex;
+  gap: 12px;
+}
+
+/* ─── Flash messages ──────────────────────────────────────── */
+.flash-messages {
+  list-style: none;
+  margin: 0 0 var(--gap);
+  padding: 0;
+}
+.flash-success { color: #8BC34A; }
+.flash-error   { color: #F44336; }

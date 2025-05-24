@@ -2,36 +2,49 @@
   "awdawd": {
     "first_time": "yes",
     "allergies": [
-      "dairy"
+      "nuts"
     ],
-    "avoid": "awdwad",
-    "diet": "awdwad",
+    "avoid": "adwwadwad",
+    "diet": "vegan",
     "will_drink": "yes",
     "experience": [
       "regular_use",
       "power_user"
     ],
-    "intensity": "high",
-    "likes": "ada",
-    "notes": "adawd",
-    "seating": "C",
+    "intensity": "medium",
+    "likes": "dwad",
+    "notes": "awdawddadawad a dwadwad",
+    "seating": "A",
     "assigned_drink": null
   },
-  "awda": {
+  "awdwadawdwadwadadwa": {
     "first_time": "yes",
     "allergies": [
-      "gluten"
+      "awdawdadaadw"
     ],
-    "avoid": "awdaw",
-    "diet": "vegan",
-    "will_drink": "yes",
+    "avoid": "dawdad",
+    "diet": "dadadawdawd",
+    "will_drink": "no",
     "experience": [
-      "power_user"
+      "first_time_exploration"
     ],
     "intensity": "medium",
-    "likes": "adwad",
-    "notes": "adwa",
-    "seating": "A",
+    "likes": "awdwa",
+    "notes": null,
+    "seating": "B",
+    "assigned_drink": null
+  },
+  "awdawdwad": {
+    "first_time": null,
+    "allergies": [],
+    "avoid": null,
+    "diet": null,
+    "will_drink": null,
+    "experience": [],
+    "intensity": null,
+    "likes": null,
+    "notes": null,
+    "seating": null,
     "assigned_drink": null
   }
 }

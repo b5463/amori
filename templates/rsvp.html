@@ -34,6 +34,7 @@
             type="text"
             class="rsvp-input"
             placeholder="Enter your name"
+            {% if seats == 0 %}disabled{% endif %}
             required
             autofocus
           >
@@ -49,10 +50,16 @@
           form="rsvp-form"
           id="rsvp-next"
           class="next"
-          disabled
+          {% if seats == 0 %}disabled{% endif %}
         >Next →</button>
       </div>
     </div>
+
+    {% if seats == 0 %}
+    <div class="wizard-note">
+      <em>Sorry, we’re all booked up right now!</em>
+    </div>
+    {% endif %}
 
   </div>
 </div>
@@ -63,9 +70,12 @@
   (function() {
     const input = document.getElementById('rsvp-name');
     const btn   = document.getElementById('rsvp-next');
+    // only wire up the “enable when non-empty” behavior if seats remain
+    {% if seats > 0 %}
     input.addEventListener('input', () => {
       btn.disabled = input.value.trim() === '';
     });
+    {% endif %}
   })();
 </script>
 {% endblock %}

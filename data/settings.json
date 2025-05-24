@@ -1,4 +1,9 @@
 {
-  "menu_available": false,
-  "drink_options": []
+  "menu_available": true,
+  "drink_options": [
+    "awdawd",
+    "dawd",
+    "adawd",
+    "awdwad"
+  ]
 }

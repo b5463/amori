@@ -61,42 +61,6 @@ for path, default in (
 # ──────────────────────────────────────────────────
 # Generic JSON I/O helpers
 # ──────────────────────────────────────────────────
-def validate_step_data(data):
-    """
-    Basic schema validation for guest survey step data.
-    Returns True if valid, False if invalid.
-    """
-    if not isinstance(data, dict):
-        return False
-
-    step = data.get('current_step')
-    if not isinstance(step, int) or not (1 <= step <= 10):
-        return False
-
-    # Only check fields present in this update
-    allowed_keys = {
-        "first_time": lambda x: isinstance(x, bool),
-        "allergies": lambda x: isinstance(x, list) and all(isinstance(i, str) for i in x),
-        "avoid": lambda x: isinstance(x, str) or x is None,
-        "diet": lambda x: isinstance(x, str) or x is None,
-        "will_drink": lambda x: isinstance(x, bool) or x is None,
-        "experience": lambda x: isinstance(x, list) and all(isinstance(i, str) for i in x),
-        "intensity": lambda x: isinstance(x, int) or x is None,
-        "likes": lambda x: isinstance(x, str) or x is None,
-        "notes": lambda x: isinstance(x, str) or x is None,
-        "seating": lambda x: isinstance(x, str) or x is None,
-        "assigned_drink": lambda x: isinstance(x, str) or x is None,
-        "step_completed": lambda x: isinstance(x, bool),
-        "current_step": lambda x: isinstance(x, int),
-    }
-
-    for key, value in data.items():
-        if key in allowed_keys:
-            if not allowed_keys[key](value):
-                return False
-
-    return True
-
 def load_json(path, default):
     try:
         with open(path, 'r', encoding='utf-8') as f:
@@ -146,10 +110,6 @@ def save_survey_state(name, step_data):
             "completion_status": {},
             "validation_errors": []
         }
-    
-    # Validate step data
-    if not validate_step_data(step_data):
-        guests[name]['validation_errors'].append(f"Invalid data for step {step_data.get('current_step')}")
     
     # Update completion status
     if step_data.get('step_completed'):
@@ -218,8 +178,7 @@ def guest_api(name):
 
     @lru_cache(maxsize=32)
     def get_cached_guest(guest_name):
-        guests = load_guests()
-        return guests.get(guest_name)
+        return load_guests().get(guest_name)
 
     if request.method == 'PATCH':
         data = request.get_json()
@@ -266,12 +225,6 @@ def survey(name):
     guest_data = guests[name]
     current_step = guest_data.get('current_step', 1)
     
-    # Check for session timeout
-    last_active = guest_data.get('last_active', 0)
-    if time.time() - last_active > 7200:  # 2 hour timeout
-        flash('Survey session timed out. Please start over.', 'error')
-        return redirect(url_for('rsvp'))
-
     # Get taken seats for the seating step
     taken = [g.get('seating') for g in guests.values() if g.get('seating')]
     current = guest_data.get('seating', '')
@@ -392,6 +345,11 @@ def admin():
                 'url': url_for('static', filename=f'uploads/{guest_fn}')
             })
 
+    completed_surveys = sum(
+      1 for g in guests.values()
+      if len(g.get('completion_status', {})) >= 5
+    )
+
     courses.sort(key=lambda c: c['order'])
     return render_template(
       'admin.html',
@@ -399,7 +357,9 @@ def admin():
       settings=settings,
       menu_available=menu_available,
       previews=previews,
-      courses=courses
+      courses=courses,
+      completed_surveys=completed_surveys,
+      hide_nav=True
     )
 
 @app.route('/admin/toggle_menu', methods=['POST'])
@@ -475,6 +435,19 @@ def admin_delete_course(cid):
     flash("Course removed", "success")
     return redirect(url_for('admin'))
 
+# ────────────────────────────────────────────
+# New: Guests Table View
+# ────────────────────────────────────────────
+@app.route('/admin/guests')
+def guest_table():
+    guests = load_guests()
+    settings = load_settings()
+    return render_template(
+        'guest_table.html',
+        settings=settings,
+        guests=guests,
+        hide_nav=True
+    )
 
 # ─────────────────────────────────────────────────────────────
 # → New: Broadcast when rating is saved
