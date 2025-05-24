@@ -61,6 +61,42 @@ for path, default in (
 # ──────────────────────────────────────────────────
 # Generic JSON I/O helpers
 # ──────────────────────────────────────────────────
+def validate_step_data(data):
+    """
+    Basic schema validation for guest survey step data.
+    Returns True if valid, False if invalid.
+    """
+    if not isinstance(data, dict):
+        return False
+
+    step = data.get('current_step')
+    if not isinstance(step, int) or not (1 <= step <= 10):
+        return False
+
+    # Only check fields present in this update
+    allowed_keys = {
+        "first_time": lambda x: isinstance(x, bool),
+        "allergies": lambda x: isinstance(x, list) and all(isinstance(i, str) for i in x),
+        "avoid": lambda x: isinstance(x, str) or x is None,
+        "diet": lambda x: isinstance(x, str) or x is None,
+        "will_drink": lambda x: isinstance(x, bool) or x is None,
+        "experience": lambda x: isinstance(x, list) and all(isinstance(i, str) for i in x),
+        "intensity": lambda x: isinstance(x, int) or x is None,
+        "likes": lambda x: isinstance(x, str) or x is None,
+        "notes": lambda x: isinstance(x, str) or x is None,
+        "seating": lambda x: isinstance(x, str) or x is None,
+        "assigned_drink": lambda x: isinstance(x, str) or x is None,
+        "step_completed": lambda x: isinstance(x, bool),
+        "current_step": lambda x: isinstance(x, int),
+    }
+
+    for key, value in data.items():
+        if key in allowed_keys:
+            if not allowed_keys[key](value):
+                return False
+
+    return True
+
 def load_json(path, default):
     try:
         with open(path, 'r', encoding='utf-8') as f:

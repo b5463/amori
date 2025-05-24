@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch(err) {
       console.error('Failed to submit rating', err);
-      alert('Oops! Couldn’t save feedback. Please try again.');
+      alert('Oops! Could not save feedback. Please try again.');
     }
   });
 });
