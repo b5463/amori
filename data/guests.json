@@ -1,0 +1,37 @@
+{
+  "awdawd": {
+    "first_time": "yes",
+    "allergies": [
+      "dairy"
+    ],
+    "avoid": "awdwad",
+    "diet": "awdwad",
+    "will_drink": "yes",
+    "experience": [
+      "regular_use",
+      "power_user"
+    ],
+    "intensity": "high",
+    "likes": "ada",
+    "notes": "adawd",
+    "seating": "C",
+    "assigned_drink": null
+  },
+  "awda": {
+    "first_time": "yes",
+    "allergies": [
+      "gluten"
+    ],
+    "avoid": "awdaw",
+    "diet": "vegan",
+    "will_drink": "yes",
+    "experience": [
+      "power_user"
+    ],
+    "intensity": "medium",
+    "likes": "adwad",
+    "notes": "adwa",
+    "seating": "A",
+    "assigned_drink": null
+  }
+}

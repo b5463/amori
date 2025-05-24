@@ -1,0 +1,220 @@
+/* ── Admin Dashboard — iPad-friendly, no scroll ───────────────── */
+
+.admin-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* — Toolbar Buttons — */
+.controls {
+  display: flex;
+  flex-wrap: nowrap;      /* never wrap to a new line */
+  gap: 0.5rem;
+  overflow-x: auto;       /* horizontal scroll if too many buttons */
+  margin-bottom: 1.5rem;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iPad */
+}
+.controls__button {
+  background: #d56363;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.controls__button:hover {
+  background: #c45252;
+}
+.controls__button.removal {
+  background: #b33c3c;
+}
+.controls__button.removal:hover {
+  background: #9e2f2f;
+}
+
+/* — Flash Messages — */
+.flash-messages {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+.flash-messages li {
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+.flash-success { background: #e6f4ea; color: #2d662d; }
+.flash-error   { background: #fdecea; color: #882626; }
+
+/* — Drink Manager — */
+.drink-manager {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.drink-manager h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+.drink-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.drink-form input[name="drink"] {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.drink-form button {
+  background: #d56363;
+  color: #fff;
+  border: none;
+  padding: 0 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* Collapsible list of existing drinks */
+.drink-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.5rem;
+  background: #f7f1e7;
+  border-radius: 4px;
+  user-select: none;
+  margin-bottom: 0.5rem;
+}
+.drink-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+.drink-details:not([open]) .drink-list {
+  display: none;
+}
+.drink-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+.inline-delete {
+  background: none;
+  border: none;
+  color: #d55;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+.none {
+  font-style: italic;
+  color: #666;
+  margin: 0.5rem 0 0;
+}
+
+/* — Responses Table — */
+.responses-section {
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+.responses-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.responses-table th,
+.responses-table td {
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+  white-space: nowrap;
+}
+.responses-table th:first-child,
+.responses-table td:first-child {
+  text-align: left;
+  font-weight: 600;
+  background: #f7f1e7;
+}
+.assign-drink {
+  width: 100%;
+  padding: 0.25rem;
+}
+
+/* — Action Buttons in Table Footer — */
+.responses-table tfoot th,
+.responses-table tfoot td {
+  border: none;
+  padding-top: 1rem;
+}
+.table-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.table-actions button {
+  background: #d56363;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.table-actions button:hover {
+  background: #c45252;
+}
+
+/* — Menu Previews — */
+.menu-previews {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.menu-previews h2 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+.previews-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.preview {
+  text-align: center;
+  flex: 1 1 120px;
+}
+.preview img {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  display: block;
+  margin: 0 auto;
+}
+
+/* — Responsive — */
+@media (max-width: 768px) {
+  .controls { justify-content: center; }
+  .responses-section { overflow-x: auto; }
+  .preview { flex: 1 1 100px; }
+}

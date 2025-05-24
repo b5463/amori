@@ -1,0 +1,116 @@
+/*────────────────────────────────────────────────────────
+  Lock the whole drawing UI into a fixed, no‐scroll viewport
+────────────────────────────────────────────────────────*/
+.draw-page {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  background: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+}
+
+/* fixed header */
+.draw-header {
+  position: relative;
+  height: var(--header-height);
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  flex-shrink: 0;
+}
+.back-link {
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 1.1rem;
+  margin-right: 1rem;
+}
+.draw-title {
+  font-size: var(--h1-font-size);
+  font-weight: 600;
+}
+
+/* flash messages */
+.flash-container {
+  position: absolute;
+  top: var(--header-height);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+}
+.flash {
+  padding: .5rem 1rem;
+  margin: .5rem 0;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.flash.success { background: var(--secondary); }
+.flash.error   { background: #c0392b; }
+
+/*────────────────────────────────────────────────────────
+  Canvas region occupies all space between header & controls
+────────────────────────────────────────────────────────*/
+.main-content {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* your existing image+canvas rules */
+#imageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
+}
+#currentImage {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  z-index: 1;
+}
+#drawingCanvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  cursor: crosshair;
+  z-index: 2;
+}
+.no-image {
+  font-size: var(--h1-font-size);
+  color: var(--text-light);
+  text-align: center;
+}
+
+/*────────────────────────────────────────────────────────
+  Controls stay fixed at bottom
+────────────────────────────────────────────────────────*/
+.draw-controls {
+  position: relative;
+  flex-shrink: 0;
+  height: 4rem; /* room for buttons */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+  background: var(--bg-color);
+}
+.draw-btn {
+  background: var(--secondary);
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.draw-btn:hover { background: var(--primary); }

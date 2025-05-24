@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Tell Us About You – {{ name }}{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/survey.css') }}">
+{% endblock %}
+ 
+{% block body %}
+<div class="page-container full-screen">
+  <div class="wizard-card">
+
+    <!-- BACK BUTTON OUTSIDE HEADER -->
+    <button type="button" class="back-btn">
+      <img src="{{ url_for('static', filename='icons/backarrow.svg') }}"
+           alt="Back">
+    </button>
+
+    <!-- GLOBAL HEADER: only title -->
+    <div class="wizard-header">
+      <h1 class="wizard-title"></h1>
+    </div>
+
+    {% for n in range(1, total_steps + 1) %}
+      <div class="step{% if n == 1 %} active{% endif %}" data-step="{{ n }}">
+        {% include 'survey_steps/step' ~ n ~ '.html' %}
+      </div>
+    {% endfor %}
+
+    {# splash is step total_steps+1 #}
+    <div class="step" data-step="{{ total_steps + 1 }}">
+      {% include 'survey_steps/step11.html' %}
+    </div>
+
+    <!-- GLOBAL BOTTOM BAR -->
+    <div class="bottom-bar">
+      <div class="progress-container">
+        <div class="progress-bar"><div class="bar"></div></div>
+        <span class="progress-text">
+          <span class="current">1</span> of {{ total_steps }}
+        </span>
+      </div>
+      <div class="wizard-footer">
+        <button class="next">Next question</button>
+        <button id="finish" style="display:none;">Finish</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // PROGRESS_STEPS = number of real questions
+  window.PROGRESS_STEPS = {{ total_steps }};
+  // TOTAL_STEPS     = PROGRESS_STEPS + 1 (the splash)
+  window.TOTAL_STEPS    = {{ total_steps + 1 }};
+  window.GUEST_NAME     = "{{ name }}";
+  window.TAKEN_SEATS    = {{ taken_seats|tojson }};
+  window.REDIRECT_URL   = "{{ url_for('index') }}"; 
+</script>
+<script src="{{ url_for('static', filename='js/wizard.js') }}"></script>
+{% endblock %}

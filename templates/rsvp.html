@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Chef’s Table RSVP{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/survey.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/rsvp.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="page-container full-screen">
+  <!-- Note the 'rsvp-wizard' helper class on the card -->
+  <div class="wizard-card rsvp-wizard">
+
+    <!-- HEADER -->
+    <div class="wizard-header">
+      <h1 class="wizard-title">Chef’s Table RSVP</h1>
+      <div class="wizard-subtitle">
+        Seats remaining: <strong>{{ seats }}</strong>
+      </div>
+    </div>
+
+    <!-- SINGLE STEP: name entry -->
+    <div class="step active" data-step="1">
+      <p class="question-text">What’s your name?</p>
+      <div class="options-container">
+        <form id="rsvp-form"
+              action="{{ url_for('rsvp') }}"
+              method="POST"
+              style="width:100%;">
+          <input
+            name="name"
+            id="rsvp-name"
+            type="text"
+            class="rsvp-input"
+            placeholder="Enter your name"
+            required
+            autofocus
+          >
+        </form>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="bottom-bar">
+      <div class="wizard-footer">
+        <button
+          type="submit"
+          form="rsvp-form"
+          id="rsvp-next"
+          class="next"
+          disabled
+        >Next →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    const input = document.getElementById('rsvp-name');
+    const btn   = document.getElementById('rsvp-next');
+    input.addEventListener('input', () => {
+      btn.disabled = input.value.trim() === '';
+    });
+  })();
+</script>
+{% endblock %}

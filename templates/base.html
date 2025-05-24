@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport-fit=cover lets your content extend under the iOS notch -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- favicon -->
+  <link rel="icon" 
+        type="image/png" 
+        sizes="32x32" 
+        href="{{ url_for('static', filename='icons/favicon-32.png') }}">
+  <!-- you can also add a .ico fallback -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='icons/favicon.ico') }}">
+
+  <!-- PWA manifest for Android/Chrome -->
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#0A0E1A">
+
+  <!-- iOS standalone web-app meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chef’s Table">
+
+  <!-- iOS icon -->
+  <link rel="apple-touch-icon"
+        sizes="180x180"
+        href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+
+  <!-- (Optional) iOS splash screen (example for 12.9" iPad Pro portrait) -->
+  <link rel="apple-touch-startup-image"
+        href="{{ url_for('static', filename='icons/apple-splash-2048-2732.png') }}"
+        media="(device-width: 1024px) and (device-height: 1366px)
+               and (-webkit-device-pixel-ratio: 2)
+               and (orientation: portrait)">
+
+  <title>{% block title %}amori{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <div class="app-content">
+    {% block body %}{% endblock %}
+  </div>
+
+  {% if not hide_nav %}
+  <header class="header">
+    <ul class="nav-menu">
+      <li>
+        <a href="{{ url_for('menu_lookup') }}" class="nav__link">
+          <i class="uil uil-list-ui-alt nav__icon"></i> Menu
+        </a>
+      </li>
+      <li>
+        <a href="{{ url_for('admin') }}" class="nav__link">
+          <i class="uil uil-setting nav__icon"></i> Admin
+        </a>
+      </li>
+    </ul>
+  </header>
+  {% endif %}
+
+  <!-- socket.io + live-reload on menu updates -->
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    // one and only one socket connection, stored globally
+    window.socket = io();
+    window.socket.on('image_updated', data => {
+      if (location.pathname.startsWith('/menu')) {
+        location.reload();
+      }
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

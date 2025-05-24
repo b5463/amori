@@ -1,0 +1,26 @@
+<!-- per-step title + subtitle -->
+<h1 class="wizard-title">Allergies?</h1>
+<div class="wizard-subtitle">
+  We’ll skip anything that doesn’t belong on your plate.
+</div>
+
+<!-- question & dropdown -->
+<p class="question-text">Any food allergies or sensitivities?</p>
+<div class="options-container">
+  <select name="allergies" class="dropdown-select">
+    <option value="" disabled selected>Choose one…</option>
+    <option value="none">Nope, all good</option>
+    <option value="nuts">Nuts</option>
+    <option value="dairy">Dairy</option>
+    <option value="gluten">Gluten</option>
+    <option value="eggs">Eggs</option>
+    <option value="other">Something else (tell us below)</option>
+  </select>
+
+  <!-- shown only if “Other” picked -->
+  <textarea
+    name="allergies_other"
+    class="other-textarea"
+    placeholder="Let us know what to leave out"
+  ></textarea>
+</div>

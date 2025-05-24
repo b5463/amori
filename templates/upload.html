@@ -1,0 +1,63 @@
+{# templates/draw_menu.html #}
+{% extends 'base.html' %}
+{% block title %}Draw Menu{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/drawing.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="draw-page">
+
+  <!-- fixed header -->
+  <header class="draw-header">
+    <a href="{{ url_for('admin') }}" class="back-link">← Admin</a>
+  </header>
+
+  <!-- flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for cat, msg in messages %}
+          <div class="flash {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- locked canvas area -->
+  <div class="main-content">
+    <div id="imageContainer"
+         data-upload-url="{% if draw_for_guest %}{{ url_for('upload') }}?guest={{ draw_for_guest }}{% else %}{{ url_for('upload') }}{% endif %}">
+      {% if menu_image %}
+        <img id="currentImage"
+             src="{{ url_for('static', filename=menu_image) }}"
+             alt="Menu to draw on">
+        <canvas id="drawingCanvas"></canvas>
+      {% else %}
+        <p class="no-image">No menu uploaded yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- fixed controls -->
+  <div class="draw-controls">
+    <button id="undoButton" class="draw-btn undo-btn">Undo ↶</button>
+    <button id="saveButton" class="draw-btn save-btn">Save ✔️</button>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{{ url_for('static', filename='js/drawing.js') }}"></script>
+  <script>
+    // auto‐fade flash after 1.5s
+    setTimeout(() => {
+      document.querySelectorAll('.flash').forEach(el => {
+        el.style.transition = 'opacity 0.3s';
+        el.style.opacity = 0;
+        setTimeout(() => el.remove(), 300);
+      });
+    }, 1500);
+  </script>
+{% endblock %}

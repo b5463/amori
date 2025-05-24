@@ -1,0 +1,81 @@
+{# templates/menu_unavailable.html #}
+{% extends 'base.html' %}
+{% block title %}Menu Not Available{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/survey.css') }}">
+  <style>
+    .page-container.full-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 1rem;
+    }
+    .menu-card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      color: var(--text-dark);
+    }
+    .menu-card h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      font-size: 1.75rem;
+      font-weight: 500;
+    }
+    .menu-card p {
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+    .menu-card .btn {
+      display: inline-block;
+      padding: 1rem 2rem;
+      background: var(--accent);
+      color: var(--btn-color);
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .menu-card .btn:hover {
+      background: #d4880e; /* a slightly darker accent for hover */
+    }
+
+    @media (max-width: 400px) {
+      .menu-card {
+        padding: 1.5rem;
+      }
+      .menu-card h2 {
+        font-size: 1.5rem;
+      }
+      .menu-card p {
+        font-size: 0.9rem;
+      }
+      .menu-card .btn {
+        width: 100%;
+        padding: 1rem;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<div class="page-container full-screen">
+  <div class="menu-card">
+    <h2>Menu Not Available</h2>
+    <p>The chef is still putting the finishing touches on tonight’s menu. Please check back soon!</p>
+    <a href="{{ url_for('index') }}" class="btn">Return Home</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+/* ===== RSVP-specific overrides ===== */
+
+/* 1) Target only the RSVP page's title */
+.rsvp-wizard .wizard-header .wizard-title {
+  font-size: 1.25rem !important;   /* shrink from 1.75rem down to ~20px */
+  line-height: 1.3;
+  margin: 0;                       /* tighten spacing */
+}
+
+/* 2) Optionally tweak the subtitle so it balances too */
+.rsvp-wizard .wizard-header .wizard-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* 3) Make sure the header items never wrap */
+.rsvp-wizard .wizard-header {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;  /* shrink the gap below the header */
+}
+
+/* 4) Style the input to match the survey look */
+.rsvp-wizard .rsvp-input {
+  display: block;           /* ← turn it into a block element */
+  margin: 0 auto;           /* ← now auto margins will center it */
+  width: 100%;
+  max-width: 360px;
+  min-height: 56px;
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+  border: 2px solid var(--track);
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+  padding-bottom: 4rem;
+  margin-top: 1rem;       /* push the input down into view */
+}
+
+.rsvp-wizard .options-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rsvp-wizard .rsvp-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+
+/* 5) Footer button same as survey */
+.rsvp-wizard .bottom-bar {
+  padding: 1rem 1.5rem;
+}
+.rsvp-wizard .wizard-footer .next {
+  width: 100%;
+  max-width: 360px;
+  padding: 2rem 1.5rem;
+  font-size: 1.2rem;
+  border-radius: 1rem;
+}
+.rsvp-wizard .wizard-footer .next:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 6) Small‐screen tweaks */
+@media (max-width: 400px) {
+  .rsvp-wizard .wizard-header {
+    padding: 2rem 1rem 1rem !important;      /* bump header down a bit */
+    display: flex !important;
+    flex-direction: row !important;          /* always a row */
+    flex-wrap: nowrap !important;            /* no wrapping */
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  .rsvp-wizard .wizard-header .wizard-title {
+    font-size: 1.1rem !important;  /* ~18px on tiny phones */
+  }
+  .rsvp-wizard .wizard-header .wizard-subtitle {
+    font-size: 0.85rem !important;
+  }
+  .rsvp-wizard .rsvp-input {
+    max-width: 90%;  /* fill most of the screen */
+    padding-bottom: 4rem;
+    margin-top: -0.5rem;
+  }
+  .rsvp-wizard .wizard-footer .next {
+    max-width: 90%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  .rsvp-wizard .options-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+  .rsvp-wizard .wizard-header .wizard-title,
+  .rsvp-wizard .wizard-header .wizard-subtitle {
+    flex: 0 0 auto !important;               /* don’t shrink or grow */
+    margin: 0 !important;                    /* remove any margins */
+    display: inline-block !important;        /* inline for white-space */
+    white-space: nowrap !important;          /* keep on one line */
+  }
+}

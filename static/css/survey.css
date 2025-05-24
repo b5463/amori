@@ -1,0 +1,857 @@
+:root {
+  /* Neutrals */
+  --bg-page:    #FFFFFF;
+  --card-bg:    #FFFFFF;
+  --text-dark:  #0A0E1A;   /* your signature navy/black */
+  --text-light: #666666;
+
+  /* Blue-First Palette */
+  --primary:    #0A0E1A;   /* buttons, nav bars, primary UI elements */
+  --accent:     #B7282E;   /* subtle call-out color for highlights & links */
+
+  /* Components */
+  --btn-bg:     var(--primary);
+  --btn-color:  #ffffff;
+  --track:      #ECECEC;
+}
+
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  background: var(--bg-page);
+  font-family: 'Poppins', sans-serif;
+}
+
+.page-container.full-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ── CARD & LAYOUT ───────────────────────────────────────── */
+.wizard-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: var(--card-bg);
+  padding: 1.5rem 1.5rem 0.75rem;
+  padding-bottom: 6.5rem;    /* reserve space for footer */
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* only the step area scrolls */
+.step {
+  flex: 1 1 auto;
+  display: none;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .3s, transform .3s;
+  overflow-y: auto;
+}
+.step.active {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* slide animations */
+.step.left {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform .4s ease, opacity .4s ease;
+}
+.step.right {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform .4s ease, opacity .4s ease;
+}
+
+/* ── HEADER ───────────────────────────────────────────────── */
+.wizard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1.5rem;
+  position: relative;
+  margin-bottom: 1rem;
+}
+.back-btn {
+  position: absolute;
+  top: 4rem;
+  left: 2rem;
+  width: 1.8rem; height: 1.8rem;
+  background: none; border: none;
+  cursor: pointer; padding: 0; z-index: 100;
+}
+.back-btn img {
+  display: block; width: 100%; height: auto;
+  transition: transform .2s;
+}
+.back-btn:hover img {
+  transform: scale(1.2);
+}
+.wizard-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+.wizard-subtitle {
+  max-width: 240px;
+  margin: 0.5rem auto 1.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-light);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* ── QUESTION TEXT ───────────────────────────────────────── */
+.question-text {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+/* ── BUTTONS (steps 1,5,7…) ───────────────────────────────── */
+.options-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  overflow-y: auto;
+}
+.option-btn {
+  display: inline-block;
+  width: 100%;
+  max-width: 360px;
+  padding: 2.5rem 3.2rem;    /* taller tappable area */
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  background: var(--card-bg);
+  border: 2px solid var(--track);
+  border-radius: 0.9rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background .2s, transform .2s;
+  min-height: 8rem;          /* ensure height */
+}
+.option-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .3s;
+  border-radius: .75rem;
+  z-index: 0;
+}
+.option-btn:hover::before,
+.option-btn:focus::before {
+  opacity: 0.08;
+}
+.option-btn.selected::before {
+  opacity: 0.2;
+}
+.option-btn:hover {
+  transform: scale(1.02);
+}
+.option-btn.selected {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* bring Step 1 buttons up a bit */
+.step[data-step="1"] .question-text {
+  margin-bottom: 6.5rem;
+}
+.step[data-step="1"] .options-container {
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+}
+
+/* ── STEP 2: DROPDOWN + “Other” ───────────────────────────── */
+.step[data-step="2"] .options-container {
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+.dropdown-select {
+  appearance: none;
+  width: 360px !important;
+  padding: 1.5rem 1rem;
+  border: 2px solid var(--track);
+  border-radius: .75rem;
+  background: var(--card-bg)
+    url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='12'><path fill='%23666' d='M0 0 l10 12 10-12z'/></svg>")
+    no-repeat right 1rem center;
+  background-size: 1.25rem auto;
+  transition: border-color .2s, box-shadow .2s;
+  font-size: 1.2rem;  /* larger dropdown text */
+  font-weight: 500;
+}
+.other-textarea {
+  display: none;
+  width: 360px !important;
+  margin-top: 1rem;
+  padding: 2rem;        /* twice as tall textarea */
+  font-size: 1.2rem;
+  border: 2px solid var(--track);
+  border-radius: .75rem;
+  resize: vertical;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity .7s ease, transform .7s ease, border-color .2s, box-shadow .2s;
+}
+.other-textarea.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.step[data-step="2"] .dropdown-select:focus,
+.step[data-step="2"] .other-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+
+/* ── STEP 3: LARGE TEXTAREA ───────────────────────────────── */
+.textarea-input {
+  width: 100%;
+  max-width: 360px;
+  min-height: 380px;
+  padding: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  margin-bottom: 3rem;
+  border: 2px solid var(--track);
+  border-radius: .75rem;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+}
+.textarea-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+
+/* ── STEP 4: DIET GRID + “Other” ──────────────────────────── */
+.diet-grid {
+  display: grid;
+  grid-template-columns: 170px 170px;
+  grid-gap: 20px;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.diet-grid .option-btn {
+  width: 100%;
+  padding: 1.5rem;
+  font-size: 1.2rem;
+  border: 2px solid var(--track);
+  min-height: 8rem;
+  text-align: left;   /* labels flow like step 6 */
+  align-items: flex-start; /* if you want the text pinned at top of card */
+  padding-top: 2rem;  /* reduce bottom padding if you like */
+}
+
+.diet-grid .option-btn input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.diet-grid .option-btn:focus,
+.diet-grid .option-btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+.diet-grid .option-btn,
+.step[data-step="6"] .exp-grid .option-btn {
+  min-height: 8rem;
+}
+.diet-other {
+  display: none;
+  opacity: 0;
+  width: 100%;
+  max-width: 360px;
+  min-height: 150px;
+  padding: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  border: 2px solid var(--track);
+  border-radius: .75rem;
+  resize: vertical;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  transform: translateY(-10px);
+  transition: opacity .7s ease, transform .7s ease, border-color .2s, box-shadow .2s;
+}
+.diet-other.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.diet-other:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+
+/* ── STEP 6: MULTI‐SELECT GRID + “Other” ─────────────────── */
+.step[data-step="6"] .exp-grid {
+  display: grid;
+  grid-template-columns: 170px 170px;
+  grid-gap: 20px;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.step[data-step="6"] .exp-grid .option-btn {
+  display: flex;
+  width: 100%;
+  padding: 1.5rem;
+  font-size: 1.2rem;
+  text-align: top left;   /* labels flow like step 6 */
+  align-items: flex-start;
+  border: 2px solid var(--track);
+  min-height: 8rem;
+  padding-top: 2rem;  /* tweak so the cards feel the same height as step 4 */
+}
+.step[data-step="6"] .exp-grid .option-btn input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.step[data-step="6"] .exp-grid .option-btn:focus,
+.step[data-step="6"] .exp-grid .option-btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+.step[data-step="6"] .exp-grid .option-btn.selected {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.step[data-step="6"] .exp-other {
+  display: none;
+  opacity: 0;
+  width: 100%;
+  max-width: 360px;
+  min-height: 150px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 2px solid var(--track);
+  border-radius: .75rem;
+  resize: vertical;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+  transform: translateY(-10px);
+  transition: opacity .7s ease, transform .7s ease, border-color .2s, box-shadow .2s;
+}
+.step[data-step="6"] .exp-other.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.step[data-step="6"] .exp-other:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+
+.step[data-step="3"] .textarea-input {
+  margin-top: 0.5rem;      /* instead of default spacing */
+}
+.step[data-step="3"] .question-text {
+  margin-bottom: 0.5rem;   /* shrink gap under question */
+}
+
+.step[data-step="6"] .exp-grid .option-btn {
+  text-align: left;
+  padding-top: 2rem;    /* gives same top padding as diet-grid */
+}
+
+.step[data-step="5"] .options-container {
+  justify-content: flex-start;
+  padding-top: 0.5rem;   /* small gap beneath subtitle */
+}
+.step[data-step="5"] .question-text {
+  margin-bottom: 1rem;   /* tighten the gap */
+}
+
+/* ── PROGRESS & FOOTER ───────────────────────────────────── */
+.bottom-bar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: var(--card-bg);
+  padding: 1rem 1.5rem;
+  z-index: 10;
+}
+.progress-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.progress-bar {
+  flex: none;
+  width: 240px;
+  height: 8px;
+  background: var(--track);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar .bar {
+  width: 0; height: 100%;
+  background: var(--accent);
+  transition: width .4s ease;
+}
+.progress-text {
+  flex: none;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-dark);
+}
+.wizard-footer {
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  margin-top: 0.5rem;
+}
+.wizard-footer .next,
+.wizard-footer #finish {
+  font-weight: 600;
+  color: var(--btn-color);
+  background: var(--btn-bg);
+  width: 360px !important;
+  padding: 2rem 1.5rem;   /* taller footer button */
+  border-radius: 1rem;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.wizard-footer .next:disabled,
+.wizard-footer #finish:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── STEP 7: INTENSITY “PYRAMID” LAYOUT ─────────────────── */
+.step[data-step="7"] .options-container {
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-top: 0;
+}
+
+/* 2-column grid: medium spans top row, low & high below */
+.intensity-grid {
+  display: grid;
+  grid-template-columns: 170px 170px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "medium medium"
+    "low    high";
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* shared card styles */
+.intensity-grid .option-btn {
+  grid-area: unset;
+  min-height: 8rem;
+  border: 2px solid var(--track);
+  border-radius: 0.9rem;
+  font-size: 1.2rem;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  padding: 2rem 1rem 1rem;
+  position: relative;
+}
+
+/* place each into its slot */
+.intensity-grid .option-btn[data-value="medium"] { grid-area: medium; }
+.intensity-grid .option-btn[data-value="low"]    { grid-area: low;    }
+.intensity-grid .option-btn[data-value="high"]   { grid-area: high;   }
+
+/* hide native radios */
+.intensity-grid input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Lift Diet & Experience Grids Up ─────────────────────── */
+/* Remove the vertical centering on these steps and nudge the grid up */
+.step[data-step="4"] .options-container,
+.step[data-step="6"] .options-container {
+  justify-content: flex-start;  /* push content to the top */
+  padding-top: 0.5rem;          /* small gap under subtitle */
+}
+
+/* ── Step 1 spacing & positioning ───────────────────────── */
+.step[data-step="1"] .question-text {
+  margin-bottom: 6rem;    /* big gap under the question */
+}
+.step[data-step="1"] .options-container {
+  justify-content: flex-start;
+  padding-top: 0.5rem;      /* small gap under the subtitle */
+}
+
+/* ── Now apply the same to Step 5 ───────────────────────── */
+.step[data-step="5"] .question-text {
+  margin-bottom: 6.5rem;
+}
+.step[data-step="5"] .options-container {
+  justify-content: flex-start;
+  padding-top: 0.5rem;
+}
+
+/* ── And ensure all option-btns share the same height ───── */
+.option-btn {
+  /* already used by steps 1,5,7… */
+  min-height: 8rem;         /* same tappable area everywhere */
+  margin-bottom: 0rem;      /* consistent gap between cards */
+}
+
+/* nudge step 8 textarea up a bit */
+.step[data-step="8"] .textarea-input {
+  margin-top: 0.5rem;
+}
+.step[data-step="8"] .question-text {
+  margin-bottom: 0.5rem;
+}
+
+/* nudge step 9 textarea up a bit */
+.step[data-step="9"] .textarea-input {
+  margin-top: 0.5rem;
+}
+.step[data-step="9"] .question-text {
+  margin-bottom: 0.5rem;
+}
+
+/* ── STEP 10: SEATING PICKER ───────────────────────────────── */
+.step[data-step="10"] .options-container {
+  justify-content: flex-start;
+  padding-top: 1rem;
+}
+
+/* Outer container, centered */
+.seating-container {
+  position: relative;
+  width: 100%;
+  max-width: 280px;   /* narrow so C stays in */
+  height: 320px;
+  margin: 1rem auto 2rem;
+}
+
+/* the square table */
+.seating-container .table {
+  position: absolute;
+  width: 160px; height: 160px;
+  background: var(--track);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: .5rem;
+}
+
+/* common seat styles */
+.seating-container .seat {
+  position: absolute;
+  width: 56px; height: 56px;
+  background: var(--card-bg);
+  border: 2px solid var(--track);
+  border-radius: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.seating-container .seat input { display: none; }
+.seating-container .seat.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* A & B above the table */
+.seating-container .seat-a,
+.seating-container .seat-b {
+  top: calc(50% - (80px + 56px));
+}
+.seating-container .seat-a {
+  left: calc(50% - 72px);
+}
+.seating-container .seat-b {
+  left: calc(50% + 16px);
+}
+/* C on the right middle */
+.seating-container .seat-c {
+  top: calc(50% - 28px);
+  left: calc(50% + 80px + 4px);
+}
+
+/* ── STEP 10: SEATING PICKER ───────────────────────────────── */
+.step[data-step="10"] .options-container {
+  justify-content: flex-start;
+  padding-top: 1rem;
+}
+
+/* Outer container, centered and slightly narrower */
+.step[data-step="10"] .seating-container {
+  position: relative;
+  width: 100%;
+  max-width: 260px;   /* tighten in to keep C inside */
+  height: 300px;      /* shrink down */
+  margin: 1rem auto 2rem;
+}
+
+/* the square table */
+.step[data-step="10"] .seating-container .table {
+  width: 140px;       /* shrink from 160px */
+  height: 140px;      /* shrink from 160px */
+}
+
+/* common seat sizing unchanged */
+.step[data-step="10"] .seating-container .seat {
+  width: 56px;
+  height: 56px;
+}
+
+/* A & B above the table */
+.step[data-step="10"] .seating-container .seat-a,
+.step[data-step="10"] .seating-container .seat-b {
+  top: calc(50% - (70px + 56px)); /* half-table (70px) + seat height */
+}
+.step[data-step="10"] .seating-container .seat-a {
+  left: calc(50% - 64px);         /* center minus half-table & half-gap */
+}
+.step[data-step="10"] .seating-container .seat-b {
+  left: calc(50% +  8px);         /* seat-a + seat-width + 8px gap */
+}
+
+/* C on the right middle */
+.step[data-step="10"] .seating-container .seat-c {
+  top: calc(50% - 28px);          /* center minus half-seat */
+  left: calc(50% + 70px + 4px);   /* half-table(70px) + 4px gap */
+}
+
+.seat.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.seat.disabled .seat-label {
+  color: #999;
+}
+
+/*────────────────────────────────────────────────────────
+  RSVP‐only tweaks
+────────────────────────────────────────────────────────*/
+
+/* 1) Full-width, 2-column header: title on left, “Seats remaining” on right */
+.rsvp-wizard .wizard-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.5rem 1rem !important;
+  box-sizing: border-box;
+}
+
+/* 3) Restore full, wrap-friendly title */
+.rsvp-wizard .wizard-title {
+  font-size: 1.25rem !important;      /* slightly smaller so it fits */
+  white-space: normal !important;     /* allow wrapping at word breaks */
+  overflow: visible !important;       /* never clip */
+  text-overflow: clip !important;     /* definitely no ellipsis */
+  margin: 0 !important;
+}
+
+/* 4) Keep seats label on one line, right-aligned */
+.rsvp-wizard .wizard-subtitle {
+  font-size: 0.9rem !important;
+  color: var(--text-light) !important;
+  white-space: nowrap !important;
+  margin: 0 !important;
+}
+
+/* 2) Standalone “name” input styled like survey textareas */
+.rsvp-wizard .rsvp-input {
+  width: 100%;
+  max-width: 360px;
+  min-height: 56px;              /* same tappable height as buttons */
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+  border: 2px solid var(--track);
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
+}
+.rsvp-wizard .rsvp-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
+}
+
+@media (max-width: 408px) {
+  /* ── 2×2 DIETS & EXPERIENCE GRIDS ─────────────────────────── */
+  .diet-grid,
+  .exp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-gap: 1rem                   !important;
+    max-width: none                 !important;
+  }
+
+  /* ── INTENSITY “PYRAMID” ─────────────────────────────────── */
+  .intensity-grid {
+    display: grid;
+    width: 80vw                     !important;
+    max-width: 100vw                 !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr))      !important;
+    grid-template-areas:
+      "medium medium"
+      "low    high"                 !important;
+    grid-gap: 1rem                  !important;
+    box-sizing:border-box;
+    margin: 0 auto;
+    padding:0; 
+  }
+  /* ensure Medium still spans both columns */
+  .intensity-grid .option-btn[data-value="medium"] {
+    grid-column: 1 / -1             !important;
+  }
+
+  /* ── HEADER & TITLE WRAP ─────────────────────────────────── */
+  .wizard-header {
+    padding: 0.5rem 1rem            !important;
+  }
+  .back-btn {
+    top: 0.75rem                    !important;
+    left: 0.75rem                   !important;
+  }
+  .wizard-title {
+    margin: 0 2.5rem                !important;  /* leave arrow room */
+    font-size: 1.5rem               !important;
+    line-height: 1.2                !important;
+    white-space: normal             !important;
+    word-break: break-word          !important;
+    text-align: center              !important;
+  }
+
+  /* — keep widths fluid as before */
+  .dropdown-select,
+  .textarea-input,
+  .other-textarea {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    padding: 1rem !important;
+    font-size: 1rem !important;
+  }
+
+  /* — force a sensible, taller min-height and allow scrolling */
+  textarea.textarea-input,
+  textarea.other-textarea {
+    min-height: 30vh        !important;
+    max-height: 60vh        !important;
+    height: auto            !important;
+    overflow-y: auto        !important;
+  }
+
+  .step[data-step="5"] .option-btn {
+    /* make it a flex container so multi-line text stays centered */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    /* bump the tappable height way up */
+    min-height: 8rem;       /* ~224px tall */
+    padding: 0 3.2rem;       /* horizontal padding stays the same */
+  }
+
+  /* — dropdown arrow padding so it never gets cut off */
+  .dropdown-select {
+    padding-right: 2.5rem !important;
+  }
+
+  .rsvp-wizard .wizard-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  /* 2) Restore wrapping and full text for the title */
+  .rsvp-wizard .wizard-title {
+    font-size: 1.5rem !important;      /* slightly smaller so it fits */
+    white-space: normal !important;    /* allow wrap at spaces */
+    overflow: visible !important;      /* never clip */
+    text-overflow: clip !important;    /* no ellipsis */
+    margin: 0 !important;
+  }
+
+  /* 3) Keep the seats label on one line */
+  .rsvp-wizard .wizard-subtitle {
+    font-size: 0.9rem !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    color: var(--text-light) !important;
+  }
+
+  .step[data-step="4"] .diet-other {
+    min-height: 100px;
+    max-height: 160px;
+    padding: 0.5rem;
+  }
+  .step[data-step="6"] .exp-other {
+    min-height: 5px;
+    max-height: 50px;
+    padding: 0.5rem;
+  }
+  /* ── shrink Step 1 & 5 buttons by 10px ───────────────── */
+  .step[data-step="1"] .option-btn,
+  .step[data-step="5"] .option-btn {
+    width: 100%;
+    max-width: 350px;   /* was 360px, now 350px */
+    margin: 0 auto;     /* keep them centered */
+  }
+  .option-btn:hover,
+  .option-btn:active,
+  .wizard-footer .next:active,
+  .wizard-footer .next:hover {
+    transform: none !important;
+  }
+  .step[data-step="6"] .exp-other {
+    /* pull it closer to the checkboxes */
+    margin-top: 0.5rem !important;
+  }
+
+  /* if you’re using the “visible” class */
+  .step[data-step="6"] .exp-other.visible {
+    margin-top: 0.5rem !important;
+    
+  }.step[data-step="6"] .options-container {
+    padding-top: 0.25rem !important;
+  }
+}
