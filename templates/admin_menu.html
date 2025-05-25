@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+<header class="admin-header">
+  <div class="header-logo">CosyPOS</div>
+  <div class="search-wrapper">
+    <input type="search" placeholder="Search…">
+  </div>
+</header>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin') }}" class="sidebar-link"><span class="icon">📊</span>Dashboard</a>
+      <a href="{{ url_for('admin_menu') }}" class="sidebar-link active"><span class="icon">📋</span>Menu</a>
+      <a href="#" class="sidebar-link"><span class="icon">✏️</span>Reservation</a>
+      <a href="#" class="sidebar-link"><span class="icon">💬</span>Chat</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <!-- Category Tiles -->
+    <div class="category-grid">
+      {% for cat in categories %}
+        <div class="category-card pastel-{{ loop.index % 5 + 1 }}">
+          <span class="icon">{{ cat.icon }}</span>
+          <h4>{{ cat.name }}</h4>
+          <small>{{ cat.count }} items</small>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Orders & Details -->
+    <div class="orders-section">
+      <div class="order-cards">
+        {% for order in orders %}
+          <div class="order-card pastel-{{ order.pastel }}">
+            <div class="order-title">Orders → Kitchen</div>
+            <h5>{{ order.name }}</h5>
+            <small>${{ "%.2f"|format(order.price) }}</small>
+            <div class="order-controls">
+              <button data-action="decrement">−</button>
+              <span>{{ order.qty }}</span>
+              <button data-action="increment">+</button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="order-summary">
+        <h5>Table {{ table_id }}</h5>
+        <ul>
+          {% for item in cart %}
+            <li>
+              <span class="bullet">{{ loop.index }}</span>
+              <span>{{ item.name }} x{{ item.qty }}</span>
+              <span>${{ "%.2f"|format(item.subtotal) }}</span>
+              <button class="remove">🗑️</button>
+            </li>
+          {% endfor %}
+        </ul>
+        <div class="totals">
+          <dl><dt>Subtotal</dt><dd>${{ subtotal }}</dd></dl>
+          <dl><dt>Tax 10%</dt><dd>${{ tax }}</dd></dl>
+          <dl><dt>Total</dt><dd>${{ total }}</dd></dl>
+        </div>
+        <div class="payment-methods">
+          <button>Cash</button>
+          <button>Debit Card</button>
+          <button>E-Wallet</button>
+        </div>
+        <button class="place-order">Place Order</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

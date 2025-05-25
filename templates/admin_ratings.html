@@ -1,245 +1,110 @@
+{# templates/manage_ratings.html #}
 {% extends 'base.html' %}
 
 {% block title %}Course Feedback & Ratings{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-<style>
-  :root {
-    --primary: #d56363;
-    --primary-dark: #c45252;
-    --bg-page: #f7f7f7;
-    --bg-card: #ffffff;
-    --border: #e2e2e2;
-    --text-base: #0A0E1A;
-    --text-muted: #6b6b6b;
-    --radius: 0.75rem;
-  }
-
-  body {
-    background: var(--bg-page);
-  }
-  .ratings-page {
-    padding: 2rem;
-    max-width: 810px;
-    margin: 0 auto;
-  }
-
-  /* Header */
-  .ratings-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-  .ratings-header h1 {
-    margin: 0;
-    font-size: 1.75rem;
-    color: var(--text-base);
-    letter-spacing: 0.5px;
-  }
-  .ratings-header .actions {
-    display: flex;
-    gap: 0.75rem;
-  }
-
-  /* Add Course Form */
-  .add-course-form {
-    display: grid;
-    grid-template-columns: 1fr 80px auto;
-    gap: 1rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-bottom: 2rem;
-    transition: box-shadow .2s;
-  }
-  .add-course-form:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  }
-  .add-course-form input,
-  .add-course-form button {
-    height: 3rem;
-  }
-  .add-course-form input {
-    padding: 0 1rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 1rem;
-    color: var(--text-base);
-    outline: none;
-    transition: border-color .2s;
-  }
-  .add-course-form input:focus {
-    border-color: var(--primary);
-  }
-  .add-course-form button {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius);
-    padding: 0 1.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background .2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .add-course-form button:hover {
-    background: var(--primary-dark);
-  }
-
-  /* Course Card */
-  .course-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    margin-bottom: 1.5rem;
-    transition: transform .2s, box-shadow .2s;
-  }
-  .course-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  }
-  .course-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  .course-card-header h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-base);
-  }
-  .course-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .course-actions button {
-    font-size: 0.95rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.5rem;
-  }
-
-  /* Ratings List */
-  .ratings-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-  }
-  .rating-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  .rating-item:last-child {
-    margin-bottom: 0;
-  }
-  .guest {
-    font-weight: 600;
-    color: var(--text-base);
-  }
-  .score {
-    margin-left: auto;
-    background: var(--primary);
-    color: #fff;
-    padding: 0.3rem 0.8rem;
-    border-radius: 0.5rem;
-    font-size: 0.9rem;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-  .feedback {
-    width: 100%;
-    margin-left: 1rem;
-    font-style: italic;
-    color: var(--text-muted);
-    opacity: 0.85;
-  }
-  .no-ratings {
-    color: var(--text-muted);
-    font-style: italic;
-    text-align: center;
-    padding: 1rem 0;
-  }
-
-  /* Responsive tweaks */
-  @media (max-width: 600px) {
-    .add-course-form {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto auto;
-    }
-    .add-course-form button {
-      width: 100%;
-      justify-self: end;
-    }
-  }
-</style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/manage.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="admin-container ratings-page">
-  <!-- Header + Clear -->
-  <div class="ratings-header">
-    <div class="actions">
-      <a href="{{ url_for('admin') }}" class="controls__button">← Dashboard</a>
-      <form action="{{ url_for('admin_clear_ratings') }}" method="POST" style="display:inline">
-        <button type="submit" class="controls__button removal" onclick="return confirm('Delete all ratings?');">🗑️ Clear All</button>
-      </form>
-    </div>
-    <h1>Manage Courses</h1>
-  </div>
+<div class="admin-layout">
 
-  <!-- Add Course Form -->
-  <form action="{{ url_for('admin_add_course') }}" method="POST" class="add-course-form">
-    <input name="name" type="text" placeholder="Course Name" required>
-    <input name="order" type="number" min="1" value="{{ courses|length + 1 }}" required>
-    <button type="submit">+ Add Course</button>
-  </form>
+  <!-- ▸ SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">amori&nbsp;POS</div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin') }}"         class="sidebar-link">Home</a>
+      <a href="{{ url_for('upload') }}"        class="sidebar-link">Draw</a>
+      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link active">Courses</a>
+      <a href="{{ url_for('guest_table') }}"   class="sidebar-link">Guests</a>
+    </nav>
+  </aside>
 
-  <!-- Courses List -->
-  {% if courses|length %}
-    {% for c in courses|sort(attribute='order') %}
-      <div class="course-card">
-        <div class="course-card-header">
-          <h3>{{ c.order }}. {{ c.name }}</h3>
-          <div class="course-actions">
-            <button class="controls__button rate-course" data-id="{{ c.id }}">▶ Rate</button>
-            <form action="{{ url_for('admin_delete_course', cid=c.id) }}" method="POST">
-              <button type="submit" class="controls__button removal">✕</button>
-            </form>
-          </div>
-        </div>
-        {% set cr = ratings|selectattr('course_id','equalto',c.id)|list %}
-        {% if cr %}
-          <ul class="ratings-list">
-            {% for r in cr %}
-              <li class="rating-item">
-                <span class="guest">{{ r.guest }}</span>
-                {% if r.feedback %}
-                  <div class="feedback">“{{ r.feedback }}”</div>
-                {% endif %}
-                <span class="score">{{ r.score }}/5</span>
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <div class="no-ratings">No ratings yet.</div>
-        {% endif %}
+  <!-- ▸ MAIN PANEL -->
+  <main class="admin-main">
+
+    <!-- Header row -->
+    <div class="ratings-header">
+      <h1 class="page-title">Manage Courses</h1>
+
+      <div class="actions">
+        <form action="{{ url_for('admin_clear_ratings', next=request.path) }}"
+              method="POST"
+              onsubmit="return confirm('Delete all ratings?');"
+              style="display:inline">
+          <button type="submit" class="btn-destructive">🗑️ Clear&nbsp;All</button>
+        </form>
       </div>
-    {% endfor %}
-  {% else %}
-    <div class="no-ratings">No courses defined.</div>
-  {% endif %}
+    </div>
+
+    <!-- Add-course form -->
+    <form action="{{ url_for('admin_add_course', next=request.path) }}"
+          method="POST"
+          class="add-course-form">
+      <input name="name"
+             type="text"
+             placeholder="Course Name"
+             required>
+
+      <input name="order"
+             type="number"
+             min="1"
+             value="{{ courses|length + 1 }}"
+             required>
+
+      <button type="submit" class="btn-outline">+ Add</button>
+    </form>
+
+    <!-- Course cards -->
+    {% if courses %}
+      {% for c in courses|sort(attribute='order') %}
+        <div class="course-card">
+
+          <div class="course-card-header">
+            <h3>{{ c.order }}.&nbsp;{{ c.name }}</h3>
+
+            <div class="course-actions">
+              <button class="btn-outline rate-course"
+                      data-id="{{ c.id }}">▶ Rate</button>
+
+              <form action="{{ url_for('admin_delete_course',
+                                       cid=c.id,
+                                       next=request.path) }}"
+                    method="POST"
+                    style="display:inline">
+                <button type="submit" class="btn-destructive">✕</button>
+              </form>
+            </div>
+          </div>
+
+          {% set cr = ratings|selectattr('course_id','equalto',c.id)|list %}
+          {% if cr %}
+            <ul class="ratings-list">
+              {% for r in cr %}
+                <li class="rating-item">
+                  <span class="guest">{{ r.guest }}</span>
+
+                  {% if r.feedback %}
+                    <div class="feedback">“{{ r.feedback }}”</div>
+                  {% endif %}
+
+                  <span class="score">{{ r.score }}/5</span>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="no-ratings">No ratings yet.</div>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-ratings">No courses defined.</div>
+    {% endif %}
+
+  </main>
 </div>
 {% endblock %}
 

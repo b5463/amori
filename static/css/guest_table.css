@@ -1,0 +1,72 @@
+/* CosyPOS – Guest Table (v2 2024‑05‑25)
+   • Bigger “Remove All Guests” button & extra breathing room
+   • Guest cards still 3‑up, previews grid matches width
+   • Cleaned duplicate preview rules
+*/
+
+:root{--bg:#0B0D0E;--panel:#111315;--panel-alt:#1B1D1F;--card:#1B1D1F;--border:#2B2D2E;--text:#fff;--muted:#767676;--radius:8px;--gap:20px}
+
+.page-title{font-size:1.25rem;font-weight:600;margin-bottom:var(--gap)}
+
+/* ── CONTROLS ROW ─────────────────────────── */
+.admin-main>.controls{display:flex;gap:var(--gap);margin-bottom:calc(var(--gap)*1.5)}
+.admin-main>.controls .btn{
+  padding:12px 32px;
+  font-size:.9rem;
+  font-weight:600;
+  background:var(--panel);
+  border:1px solid var(--brand);
+  color:var(--brand);
+  border-radius:var(--radius);
+}
+.admin-main>.controls .btn:hover{
+  background:var(--brand);
+  color:#fff;
+}
+
+/* ── GUEST CARDS GRID (exactly 3 cols ≥960 px) ───────── */
+.guest-cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+@media(min-width:960px){.guest-cards{grid-template-columns:repeat(3,1fr)}}
+
+.guest-card{background:var(--card);border:1px solid var(--border);border-left:8px solid var(--accent);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:4px}
+.guest-card h3{margin:0 0 2px;font-size:1rem;font-weight:600}
+.guest-card p{margin:0;display:flex;gap:4px;font-size:.78rem;line-height:1.25}
+.guest-card p strong{color:var(--muted);min-width:76px;font-weight:500}
+.guest-card .actions{margin-top:1px;display:flex;gap:6px;flex-wrap:wrap}
+
+.btn{background:var(--panel-alt);border:1px solid var(--border);border-radius:var(--radius);padding:5px 12px;font-size:.72rem;font-weight:500;color:var(--text);cursor:pointer;line-height:1}
+.btn:hover{filter:brightness(1.1)}
+
+.assign-drink{width:100%;margin-top:6px;background:var(--panel-alt);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:6px;font-size:.75rem}
+.assign-drink option{background:var(--panel);color:var(--text)}
+
+/* ── MENU PREVIEWS ─────────────────────────── */
+.menu-previews{margin-top:calc(var(--gap)*2)}
+/* auto‑fill up to 4 columns; on very wide screens lock to exactly 4 */
+.previews-grid{
+  display:grid;
+  gap:16px;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px;
+}
+@media(min-width:1024px){.previews-grid{grid-template-columns:repeat(4,1fr);}}
+
+.preview strong{font-size:.8rem;font-weight:600}
+.preview img{width:100%;height:auto;max-height:250px;border-radius:var(--radius);object-fit:contain}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* centres everything horizontally */
+  text-align: center;
+}
+
+.preview strong {
+  font-size: .8rem;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+  margin-bottom: 6px;    /* little gap before the image */
+}

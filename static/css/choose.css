@@ -1,0 +1,26 @@
+/* CosyPOS – Choose Guest screen (v2 2024‑05‑25)
+   First impression polish: centred card, subtle fade‑in, glassy tiles */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root{--bg: #0B0D0E;;--panel:#111315;--panel-alt:#1B1D1F;--border:#2B2D2E;--brand:#7A6FF2;--brand-light:#9589ff;--text:#fff;--muted:#767676;--radius:12px;--gap:24px}
+
+/* page wrapper fills viewport */
+.page-container{min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:var(--gap);box-sizing:border-box;font-family:"Inter",sans-serif;color:var(--text);}
+
+/* card slides up on load */
+.choose-card{width:100%;max-width:540px;display:flex;flex-direction:column;align-items:center;gap:var(--gap);animation:slideUp .6s cubic-bezier(.25,.8,.25,1)}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* heading */
+.choose-card h1{font-size:2.1rem;font-weight:700;text-align:center;margin:0;}
+.choose-card p{font-size:1rem;color:var(--muted);margin:0;text-align:center;line-height:1.4;}
+
+/* grid */
+.options-grid{width:100%;display:grid;gap:var(--gap);grid-template-columns:repeat(auto-fit,minmax(160px,1fr));}
+
+/* tile with glass effect */
+.option-btn{display:flex;align-items:center;justify-content:center;aspect-ratio:1.6/1;background:rgba(255,255,255,.03);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);color:var(--text);font-size:1.1rem;font-weight:600;text-decoration:none;transition:.2s;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);}
+.option-btn:hover,.option-btn:focus{border-color:var(--brand);box-shadow:0 6px 14px rgba(0,0,0,.3),inset 0 0 0 2px var(--brand-light);transform:translateY(-2px);}
+
+/* mobile tighten */
+@media(max-width:420px){.choose-card h1{font-size:1.6rem}.option-btn{font-size:1rem}}

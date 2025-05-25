@@ -3,103 +3,66 @@
 {% block title %}Rate: {{ course.name }}{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/survey.css') }}">
-  <style>
-    /* Make the wizard-card a positioning context */
-    .wizard-card {
-      position: relative;
-      padding-top: 3rem;
-    }
-
-    /* Lift the submit bar up by 2rem from the bottom */
-    .bottom-bar {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 2rem !important;
-    }
-
-    /* Mirror textarea styles on the dropdown */
-    select.dropdown-select {
-      padding: 1rem;
-      font-size: 1rem;
-      border: 2px solid var(--track);
-      border-radius: .75rem;
-      width: 100% !important;
-      background: var(--card-bg);
-      appearance: none;
-      box-sizing: border-box;
-      transition: border-color .2s, box-shadow .2s;
-    }
-    select.dropdown-select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
-    }
-
-    /* Add a little spacing below header so the form sits lower */
-    .wizard-header {
-      margin-bottom: 2rem;
-    }
-  </style>
+  <!-- admin.css for tokens & globals -->
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin.css') }}">
+  <!-- this page’s overrides -->
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/rate.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="page-container full-screen">
+
   <div class="wizard-card">
 
-    <!-- HEADER -->
-    <div class="wizard-header">
+    <!-- ► HEADER -->
+    <header class="wizard-header">
+      <a href="javascript:history.back()" class="back-link">←</a>
       <h1 class="wizard-title">Rate: {{ course.name }}</h1>
-    </div>
+    </header>
 
-    <!-- RATING STEP -->
-    <div class="step active" data-step="rate">
-      <form id="rate-form"
-            style="width:100%; max-width:360px; margin:0 auto;">
-        <label style="display:block; margin-bottom:1rem;">
-          Score:
-          <select name="score"
+    <!-- ► SCROLLING FORM -->
+    <main class="wizard-body">
+      <form id="rate-form" class="rate-form">
+
+        <div class="form-row">
+          <label for="score">Your Score</label>
+          <select id="score"
+                  name="score"
                   required
                   class="dropdown-select">
-            <option value="">–</option>
+            <option value="">– Select –</option>
             {% for i in range(1,6) %}
               <option value="{{ i }}">{{ i }} / 5</option>
             {% endfor %}
           </select>
-        </label>
+        </div>
 
-        <textarea
-          name="feedback"
-          placeholder="Any comments?"
-          rows="4"
-          class="textarea-input"
-          style="width:100%;"
-        ></textarea>
+        <div class="form-row">
+          <label for="feedback">Comments</label>
+          <textarea id="feedback"
+                    name="feedback"
+                    rows="4"
+                    placeholder="Anything to share?"></textarea>
+        </div>
+
       </form>
-    </div>
+    </main>
 
-    <!-- FOOTER -->
-    <div class="bottom-bar">
-      <div class="wizard-footer">
-        <button type="submit"
-                form="rate-form"
-                class="next">
-          Submit Feedback
-        </button>
-      </div>
-    </div>
+    <!-- ► FOOTER -->
+    <footer class="wizard-footer">
+      <button type="submit"
+              form="rate-form"
+              class="btn-outline">Submit Feedback</button>
+    </footer>
 
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-  <!-- expose the guest name for rate.js -->
-  <script>window.GUEST_NAME = "{{ guest }}";</script>
-  <!-- socket.io client -->
-  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-  <!-- your rate.js logic -->
-  <script src="{{ url_for('static', filename='js/rate.js') }}"></script>
+<script>window.GUEST_NAME = "{{ guest }}";</script>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/rate.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,44 @@
+/* CosyPOS – Manage Ratings (v2 2024-05-25)
+   • score pill bigger & always purple
+   • rating row uses grid for cleaner alignment
+*/
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root{--bg:#0B0D0E;--panel:#111315;--panel-alt:#1B1D1F;--border:#2B2D2E;--brand:#7A6FF2;--text:#fff;--muted:#767676;--radius:8px;--gap:20px}
+body{background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;margin:0}
+.ratings-page{max-width:900px;margin:0 auto;padding:var(--gap)}
+
+/* header */
+.ratings-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:calc(var(--gap)*1.5);gap:var(--gap)}
+.page-title{font-size:1.5rem;font-weight:600;margin:0}
+.actions{display:flex;gap:var(--gap);flex-wrap:wrap}
+
+/* buttons */
+.btn-outline{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border-radius:var(--radius);font-weight:500;font-size:.85rem;cursor:pointer;background:var(--panel);border:1px solid var(--brand);color:var(--brand)}
+.btn-outline:hover{background:var(--brand);color:#fff}
+.btn-destructive{background:var(--panel);border:1px solid #B23B3B;color:#B23B3B;border-radius:var(--radius);padding:10px 22px;font-weight:500;font-size:.85rem;cursor:pointer}
+.btn-destructive:hover{background:#B23B3B;color:#fff}
+
+/* add course form */
+.add-course-form{display:grid;grid-template-columns:1fr 90px auto;gap:var(--gap);background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:var(--gap)}
+.add-course-form input{height:42px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel-alt);color:var(--text);padding:0 14px;font-size:.9rem}
+.add-course-form input:focus{outline:none;border-color:var(--brand)}
+.add-course-form button{height:42px}
+
+/* course card */
+.course-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:calc(var(--gap)*.9);margin-top:var(--gap);display:flex;flex-direction:column;gap:var(--gap)}
+.course-card-header{display:flex;justify-content:space-between;align-items:center;gap:var(--gap)}
+.course-card-header h3{margin:0;font-size:1.125rem;font-weight:600}
+.course-actions{display:flex;gap:10px}
+
+/* ratings list */
+.ratings-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border);padding-top:var(--gap);display:flex;flex-direction:column;gap:12px}
+.rating-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.guest{font-weight:600;color:var(--text)}
+.feedback{font-style:italic;color:var(--muted)}
+.score{background:var(--brand);color:#fff;padding:4px 12px;border-radius:var(--radius);font-size:.8rem;font-weight:600;text-align:center}
+.no-ratings{color:var(--muted);font-style:italic;text-align:center;padding:var(--gap) 0}
+
+/* responsive stack */
+@media(max-width:600px){.add-course-form{grid-template-columns:1fr;grid-template-rows:auto auto auto}.add-course-form button{width:100%}}

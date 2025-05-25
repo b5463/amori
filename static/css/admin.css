@@ -1,261 +1,168 @@
+/* CosyPOS Admin – dashboard pass #4 (2024‑05‑25)
+   ────────────────────────────────────────────────────
+   ▸ Stat cards: content anchored bottom‑left (flexbox)   
+   ▸ Guest names: bumped font‑size to match Drink list    
+   ▸ Extra breathing room under “Drink Manager” heading  
+*/
+
+/* 0 · Design tokens ––––––––––––––––––––––––––– */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 :root {
-  --bg:         #111315;
-  --panel:      #111315;
-  --panel-alt:  #292C2D;
-  --border:     #676767;
-  --text:       #FFFFFF;
-  --text-muted: #767676;
-  --accent:     #D56363;
-  --radius:     8px;
-  --gap:        24px;
-  --btn-pad:    12px 24px;
+  --bg: #0B0D0E;
+  --panel: #111315;
+  --panel-alt: #1B1D1F;
+  --card: #1B1D1F;
+  --card-light: #202325;
+  --border: #2B2D2E;
+
+  --text: #FFFFFF;
+  --muted: #767676;
+
+  --brand: #7A6FF2;
+  --accent: #C9CAEF;
+
+  --radius: 8px;
+  --gap: 20px;
+  --btn-pad: 10px 22px;
 }
 
-/* ─── Layout ───────────────────────────────────────────────── */
-.admin-layout {
-  display: flex;
-  height: 100vh;
-  background: var(--bg);
-}
-.admin-sidebar {
-  width: 240px;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  border-top-left-radius: var(--radius);
-  border-bottom-left-radius: var(--radius);
-}
-.sidebar-logo {
-  padding: var(--gap);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text);
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-nav {
-  flex: 1;
-  padding: var(--gap) 0;
-}
-.sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px var(--gap);
-  color: var(--text-muted);
-  text-decoration: none;
-  border-left: 4px solid transparent;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  transition: background .2s, color .2s, border-color .2s;
-}
-.sidebar-link .icon {
-  font-size: 1.2rem;
-}
-.sidebar-link:hover {
-  background: var(--panel-alt);
-  color: var(--text);
-}
-.sidebar-link.active {
-  background: var(--panel-alt);
-  color: var(--text);
-  border-left-color: var(--border);
-}
-
-/* ─── Main panel ───────────────────────────────────────────── */
-.admin-main {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--gap);
-  background: var(--bg);
-}
-
-/* ─── Controls / Top Buttons ───────────────────────────────── */
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gap);
-  margin-bottom: var(--gap);
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--btn-pad);
-  background: var(--panel);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius);
-  color: var(--accent);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background .2s, border-color .2s, color .2s;
-}
-.btn:hover,
-.btn:focus {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-.inline-form {
+/* 1 · Global reset & layout ––––––––––––––––––– */
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  height: 100%;
   margin: 0;
-}
-
-/* ─── Metrics row ──────────────────────────────────────────── */
-.metrics-row {
-  display: flex;
-  gap: var(--gap);
-  margin-bottom: var(--gap);
-}
-.metric-card {
-  flex: 1;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--gap);
-  text-align: center;
-}
-.metric-title {
-  font-size: .875rem;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-.metric-value {
-  font-size: 1.5rem;
+  font-family: "Inter", sans-serif;
+  background: var(--bg);
   color: var(--text);
-  font-weight: 600;
+  overflow: hidden;
 }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
 
-/* ─── Tabs ─────────────────────────────────────────────────── */
-.admin-tabs {
-  display: flex;
-  gap: 12px;
-  margin-bottom: var(--gap);
-}
-.tab-button {
-  flex: 1;
-  text-align: center;
-  padding: 12px 0;
-  background: var(--panel);
+.admin-layout { display: flex; height: 100vh; }
+
+/* 2 · Sidebar ––––––––––––––––––––––––––––––––– */
+.admin-sidebar { width: 200px; background: var(--bg); display: flex; flex-direction: column; border-right: 1px solid var(--border); padding-top: var(--gap); }
+.sidebar-logo { padding: 0 var(--gap) var(--gap); font-size: 1.125rem; font-weight: 600; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; margin-top: var(--gap); padding: 0 var(--gap); }
+.sidebar-link { display: block; padding: 10px 14px; font-size: .875rem; border-radius: var(--radius); color: var(--muted); transition: background .15s, color .15s; }
+.sidebar-link:hover, .sidebar-link.active { background: var(--panel-alt); color: var(--text); }
+
+/* 3 · Main panel –––––––––––––––––––––––––––––– */
+.admin-main { flex: 1; display: flex; flex-direction: column; padding: var(--gap); overflow-y: auto; background: var(--bg); max-width: 1440px; margin: 0 auto; }
+
+/* 4 · Top bar ––––––––––––––––––––––––––––––––– */
+.top-bar { display: flex; align-items: center; gap: var(--gap); flex-wrap: wrap; justify-content: space-between; margin-bottom: var(--gap); }
+.controls { display: flex; gap: var(--gap); flex-wrap: wrap; }
+.btn-outline, .btn-primary { display: inline-flex; align-items: center; justify-content: center; padding: var(--btn-pad); border-radius: var(--radius); font-weight: 500; cursor: pointer; font-size: .8125rem; line-height: 1; }
+.btn-outline { background: var(--panel); border: 1px solid var(--brand); color: var(--brand); }
+.btn-outline:hover { background: var(--brand); color: #fff; }
+.btn-primary { background: var(--brand); border: 1px solid var(--brand); color: #fff; }
+.btn-primary:hover { filter: brightness(0.92); }
+.top-search { width: 160px; flex: none; display: flex; align-items: center; gap: 8px; background: var(--panel-alt); border-radius: var(--radius); padding: 8px 12px; color: var(--muted); margin-left: auto; }
+.top-search input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-size: .8125rem; }
+.date-picker { background: var(--panel-alt); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 8px 12px; font-family: inherit; font-size: .8125rem; }
+
+.page-title { font-size: 1.45rem; font-weight: 600; margin-bottom: var(--gap); }
+
+/* 5 · Metric tiles –––––––––––––––––––––––––––– */
+.stats-grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.stat-card {
+  position: relative;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  color: var(--text);
-  cursor: pointer;
-  transition: background .2s, border-color .2s;
-}
-.tab-button.active {
-  background: var(--panel-alt);
-  border-color: var(--border);
-}
-
-/* hide non-active */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* ─── Drink Manager ───────────────────────────────────────── */
-.drink-manager {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--gap);
-  margin-bottom: var(--gap);
-}
-.drink-form {
-  display: flex;
-  gap: 16px;
-}
-.drink-form input[type="text"] {
-  flex: 1;
-  background: var(--panel-alt);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  padding: 12px;
-}
-.drink-details summary {
-  cursor: pointer;
-  font-weight: 500;
-  color: var(--text);
-  margin-top: var(--gap);
-}
-.drink-list {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0 0;
-}
-.drink-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-}
-.inline-delete {
-  background: none;
-  border: none;
-  color: var(--accent);
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-/* ─── Previews Grid ───────────────────────────────────────── */
-.previews-section {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--gap);
-  margin-bottom: var(--gap);
-}
-.previews-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--gap);
-}
-.preview {
-  width: 160px;
-  text-align: center;
-}
-.preview img {
-  width: 100%;
-  border-radius: var(--radius);
-}
-
-/* ─── Guest Table (shared) ────────────────────────────────── */
-.guest-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
-  gap: var(--gap);
-  margin-top: var(--gap);
-}
-.guest-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-left-width: 4px;
-  border-radius: var(--radius);
-  padding: var(--gap);
+  padding: 32px 14px 20px;
+  min-height: 188px;
+  /* bottom‑left anchoring */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  word-break: break-word;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
-.guest-card h3 {
-  margin-top: 0;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-.guest-card p {
-  margin: 4px 0;
-  white-space: pre-wrap;
-  color: var(--text);
-}
-.guest-card .actions {
-  margin-top: var(--gap);
-  display: flex;
-  gap: 12px;
+.stat-card:first-child { background: var(--accent); color: #111315; border-color: transparent; }
+.stat-card:first-child .stat-title { color: #111315; }
+.stat-card:first-child .stat-icon { background: #fff; color: #111315; }
+.stat-icon { position: absolute; top: 18px; left: 18px; width: 40px; height: 40px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #111315; line-height: 1; }
+.stat-title { font-size: .85rem; color: var(--muted); }
+.stat-value { font-size: 1.8rem; font-weight: 700; margin-top: 4px; line-height: 1.1; }
+
+/* 6 · Panels ––––––––––––––––––––––––––––––––– */
+.panel { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--gap); }
+.panel.guests-panel, .panel.drink-mini { background: var(--bg); border: 1px solid var(--border); }
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--gap); }
+.panel-title { margin: 0; font-size: .9rem; font-weight: 600; }
+/* extra room under “Drink Manager” heading */
+.drink-mini .panel-title { margin-bottom: 12px; }
+.see-all { font-size: .75rem; color: var(--brand); }
+.see-all:hover { text-decoration: underline; }
+
+/************* Guests mini-card makeover (2024-05-25) *************/
+/* paste this block after the existing guest-list rules in admin.css */
+
+.guests-panel { max-height:none; }
+
+/* grid remains the same but cards get a sleeker layout */
+.guest-list {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:18px;
+  margin:0; padding:0; list-style:none;
 }
 
-/* ─── Flash messages ──────────────────────────────────────── */
-.flash-messages {
-  list-style: none;
-  margin: 0 0 var(--gap);
-  padding: 0;
+.guest-row {
+  display:flex;
+  gap:12px;
+  align-items:center;
+  background: var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px 16px;
+  position:relative;
 }
+
+.guest-avatar {
+  width:34px; height:34px;
+  border-radius:50%;
+  background:var(--brand);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.8rem; font-weight:600; color:#111315;
+}
+
+/* text block */
+.guest-info          { line-height:1.25; }
+.guest-info strong   { font-size:.95rem; font-weight:600; display:block; }
+.guest-info .seat    { font-size:.7rem; color:var(--muted); letter-spacing:.3px; }
+
+/* optional right-side chevron for future actions */
+.guest-row::after {
+  content:'›';
+  color:var(--muted);
+  font-size:.8rem;
+  position:absolute;
+  right:12px; top:50%; transform:translateY(-50%);
+}
+
+
+/* 8 · Drink manager */
+.drink-mini { max-height: 400px; display: flex; flex-direction: column; }
+.drink-form { display: flex; gap: 12px; margin-bottom: var(--gap); }
+.drink-form input[type="text"] { flex: 1; background: var(--panel-alt); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 8px; }
+.drink-details { flex: 1; overflow-y: auto; }
+.drink-details summary { cursor: pointer; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+.drink-list { list-style: none; margin: 0; padding: 0; }
+.drink-list li { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.inline-delete { background: none; border: none; color: var(--brand); font-size: 1rem; cursor: pointer; }
+.inline-delete:hover { opacity: .7; }
+
+/* 9 · Panel grid */
+.panel-grid-4 { display: grid; gap: var(--gap); grid-template-columns: 1fr 2fr; margin-top: var(--gap); }
+@media (max-width: 870px) { .panel-grid-4 { grid-template-columns: 1fr; } }
+
+/* 10 · Flash & utils */
+.flash-messages { list-style: none; margin: 0 0 var(--gap); padding: 0; }
 .flash-success { color: #8BC34A; }
-.flash-error   { color: #F44336; }
+.flash-error { color: #F44336; }
+.inline-form { margin: 0; }
+.inline-delete-form { display: inline; }

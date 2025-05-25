@@ -1,113 +1,31 @@
-{# templates/choose.html #}
 {% extends 'base.html' %}
 {% block title %}Who’s Joining?{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/survey.css') }}">
-  <style>
-    /* ── Ensure the wizard-card fills and centers its content vertically ── */
-    .page-container.full-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-top: 2rem;    /* shift everything down a bit */
-      box-sizing: border-box;
-    }
-    .wizard-card.choose-wizard {
-      width: 100%;
-      max-width: 428px;
-      /* let the header and options flow naturally */
-    }
-
-    /* ── Header: stacked & centered ── */
-    .choose-wizard .wizard-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 0.25rem;
-      margin-bottom: 2rem;
-    }
-
-    .choose-wizard .wizard-title {
-      margin: 0;
-      font-size: 1.75rem;
-      line-height: 1.2;
-    }
-
-    .choose-wizard .wizard-subtitle {
-      margin: 0;
-      font-size: 1rem;
-      color: var(--text-light);
-    }
-
-    /* ── Guest buttons: center grid ── */
-    .options-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-      justify-items: center;
-    }
-
-    .option-btn {
-      display: block;
-      width: 100%;
-      max-width: 140px;
-      padding: 1.25rem;                /* a little more “touch” area */
-      border: 2px solid var(--track);
-      border-radius: 0.75rem;
-      text-decoration: none;
-      color: var(--text-dark);
-      font-size: 1.25rem;              /* larger text */
-      font-weight: 600;                /* emphasize the name */
-      text-align: center;
-      transition: border-color .2s, box-shadow .2s;
-    }
-
-    .option-btn:hover,
-    .option-btn:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(243,156,18,0.2);
-    }
-
-    /* ── Mobile tweaks ── */
-    @media (max-width: 360px) {
-      .page-container.full-screen {
-        padding-top: 1.5rem;
-      }
-      .choose-wizard .wizard-title {
-        font-size: 1.4rem;
-      }
-      .choose-wizard .wizard-subtitle {
-        font-size: 0.9rem;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/choose.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="page-container full-screen">
-  <div class="wizard-card choose-wizard">
 
-    <!-- HEADER -->
-    <div class="wizard-header">
-      <h1 class="wizard-title">Who’s Joining?</h1>
-      <div class="wizard-subtitle">Tap your name to continue</div>
+  <section class="choose-card">
+
+    <header>
+      <h1>Who’s Joining?</h1>
+      <p>Tap your name to continue</p>
+    </header>
+
+    <div class="options-grid">
+      {% for name in guests.keys() %}
+        <a href="{{ url_for('view_menu', name=name) }}"
+            class="option-btn">
+          {{ name }}
+        </a>
+      {% endfor %}
     </div>
 
-    <!-- GUEST‐SELECTION STEP -->
-    <div class="step active guest-step" data-step="0">
-      <div class="options-container">
-        {% for name in guests.keys() %}
-          <a href="{{ url_for('view_menu', name=name) }}"
-             class="option-btn">
-            {{ name }}
-          </a>
-        {% endfor %}
-      </div>
-    </div>
+  </section>
 
-  </div>
 </div>
 {% endblock %}

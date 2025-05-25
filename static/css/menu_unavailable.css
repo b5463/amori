@@ -1,0 +1,60 @@
+/* CosyPOS – Menu Unavailable (v3) — identical palette to admin.css */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root{
+  --bg:#0B0D0E;              /* page background  */
+  --panel:#111315;           /* cards / sidebars */
+  --border:#2B2D2E;
+  --text:#FFFFFF;
+  --muted:#767676;
+  --accent:#7A6FF2;
+  --radius:12px;
+}
+
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;}
+
+.page-center{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;box-sizing:border-box;
+  background:var(--bg)
+}
+
+.card{
+  width:100%;max-width:480px;
+  background:var(--bg);           /* same as dashboard cards */
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:48px 40px;
+  text-align:center;
+  box-shadow:0 6px 28px rgba(0,0,0,.35);
+  animation:fadeUp .6s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+
+.card h2{margin:0 0 18px;font-size:1.9rem;font-weight:700;}
+.card p {margin:0 0 36px;font-size:1rem;color:var(--muted);line-height:1.55;}
+
+/* button – purple outline style */
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:22px 32px;
+  background:var(--panel);          /* dark pill */
+  border:2px solid var(--accent);   /* purple stroke */
+  border-radius:var(--radius);
+  color:var(--accent);
+  font:600 1rem/1 "Inter",sans-serif;
+  text-decoration:none;
+  transition:.15s;
+}
+.btn-primary:hover{
+  background:var(--accent);
+  color:#fff;
+}
+
+/* narrow phones */
+@media(max-width:420px){
+  .card{padding:32px 24px;}
+  .card h2{font-size:1.55rem;}
+  .btn-primary{width:100%;}
+}

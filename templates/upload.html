@@ -1,63 +1,75 @@
-{# templates/draw_menu.html #}
 {% extends 'base.html' %}
 {% block title %}Draw Menu{% endblock %}
+
 {% block extra_css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/drawing.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="draw-page">
+<div class="draw-layout">
 
-  <!-- fixed header -->
-  <header class="draw-header">
-    <a href="{{ url_for('admin') }}" class="back-link">← Admin</a>
-  </header>
+  <!-- ▸ SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">amori&nbsp;POS</div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin') }}"         class="sidebar-link">Home</a>
+      <a href="{{ url_for('upload') }}"        class="sidebar-link active">Draw</a>
+      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link">Courses</a>
+      <a href="{{ url_for('guest_table') }}"   class="sidebar-link">Guests</a>
+    </nav>
+  </aside>
 
-  <!-- flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="flash-container">
-        {% for cat, msg in messages %}
-          <div class="flash {{ cat }}">{{ msg }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endwith %}
+  <!-- ▸ MAIN COLUMN -->
+  <main class="draw-main">
 
-  <!-- locked canvas area -->
-  <div class="main-content">
-    <div id="imageContainer"
-         data-upload-url="{% if draw_for_guest %}{{ url_for('upload') }}?guest={{ draw_for_guest }}{% else %}{{ url_for('upload') }}{% endif %}">
-      {% if menu_image %}
-        <img id="currentImage"
-             src="{{ url_for('static', filename=menu_image) }}"
-             alt="Menu to draw on">
-        <canvas id="drawingCanvas"></canvas>
-      {% else %}
-        <p class="no-image">No menu uploaded yet.</p>
+    <!-- header -->
+    <header class="draw-header">
+      {% if draw_for_guest %}
+        <span style="opacity:.8">for&nbsp;<strong>{{ draw_for_guest }}</strong></span>
       {% endif %}
+    </header>
+
+    <!-- flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-container">
+          {% for cat,msg in messages %}
+            <div class="flash {{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- workspace -->
+    <div class="canvas-wrapper">
+      <div id="imageContainer"
+           data-upload-url="{% if draw_for_guest %}{{ url_for('upload') }}?guest={{ draw_for_guest }}{% else %}{{ url_for('upload') }}{% endif %}">
+        {% if menu_image %}
+          <img id="currentImage" src="{{ url_for('static', filename=menu_image) }}" alt="Menu">
+          <canvas id="drawingCanvas"></canvas>
+        {% else %}
+          <p class="flash error">No menu uploaded yet.</p>
+        {% endif %}
+      </div>
     </div>
-  </div>
 
-  <!-- fixed controls -->
-  <div class="draw-controls">
-    <button id="undoButton" class="draw-btn undo-btn">Undo ↶</button>
-    <button id="saveButton" class="draw-btn save-btn">Save ✔️</button>
-  </div>
+    <!-- footer -->
+    <div class="draw-controls">
+      <button id="undoButton" class="draw-btn undo-btn">↶ Undo</button>
+      <button id="saveButton" class="draw-btn">✔ Save</button>
+    </div>
 
+  </main>
 </div>
 {% endblock %}
 
 {% block extra_js %}
   <script src="{{ url_for('static', filename='js/drawing.js') }}"></script>
   <script>
-    // auto‐fade flash after 1.5s
-    setTimeout(() => {
-      document.querySelectorAll('.flash').forEach(el => {
-        el.style.transition = 'opacity 0.3s';
-        el.style.opacity = 0;
-        setTimeout(() => el.remove(), 300);
-      });
-    }, 1500);
+    // fade flash
+    setTimeout(()=>{document.querySelectorAll('.flash').forEach(el=>{
+      el.style.transition='opacity .3s';el.style.opacity=0;
+      setTimeout(()=>el.remove(),300);
+    })},1500);
   </script>
 {% endblock %}

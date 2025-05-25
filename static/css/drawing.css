@@ -1,116 +1,41 @@
-/*────────────────────────────────────────────────────────
-  Lock the whole drawing UI into a fixed, no‐scroll viewport
-────────────────────────────────────────────────────────*/
-.draw-page {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  overflow: hidden;
-  background: var(--bg-color);
-  display: flex;
-  flex-direction: column;
-}
+/* CosyPOS – Draw Menu (centre menu v2)  */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+:root{--bg:#0B0D0E;--panel:#111315;--panel-alt:#1B1D1F;--border:#2B2D2E;--brand:#7A6FF2;--brand-light:#9589FF;--text:#fff;--muted:#767676;--radius:8px;--gap:20px}
 
-/* fixed header */
-.draw-header {
-  position: relative;
-  height: var(--header-height);
-  background: #fff;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  flex-shrink: 0;
+.draw-layout{display:flex;height:100vh;background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;margin:0}
+/* sidebar omitted for brevity – keep same rules */
+.admin-sidebar{width:200px;background:var(--bg);display:flex;flex-direction:column;border-right:1px solid var(--border);padding-top:var(--gap)}
+.sidebar-logo{padding:0 var(--gap) var(--gap);font-size:1.125rem;font-weight:600}
+.sidebar-nav{display:flex;flex-direction:column;gap:4px;margin-top:var(--gap);padding:0 var(--gap)}
+.sidebar-link {
+  display: block;
+  padding: 10px 14px;
+  font-size: .875rem;
+  border-radius: var(--radius);
+  color: var(--muted);
+  transition: .15s;
+  text-decoration: none; /* <-- Add this line */
 }
-.back-link {
-  color: var(--text-light);
-  text-decoration: none;
-  font-size: 1.1rem;
-  margin-right: 1rem;
-}
-.draw-title {
-  font-size: var(--h1-font-size);
-  font-weight: 600;
-}
+.sidebar-link:hover,.sidebar-link.active{background:var(--panel-alt);color:var(--text)}
 
-/* flash messages */
-.flash-container {
-  position: absolute;
-  top: var(--header-height);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-}
-.flash {
-  padding: .5rem 1rem;
-  margin: .5rem 0;
-  border-radius: 4px;
-  color: #fff;
-  font-weight: 500;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.flash.success { background: var(--secondary); }
-.flash.error   { background: #c0392b; }
+.draw-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.draw-header{height:56px;flex-shrink:0;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:var(--gap);padding:0 var(--gap)}
+.back-link{color:var(--brand);text-decoration:none;font-size:.9rem;font-weight:600}
+.back-link:hover{text-decoration:underline}
 
-/*────────────────────────────────────────────────────────
-  Canvas region occupies all space between header & controls
-────────────────────────────────────────────────────────*/
-.main-content {
-  position: relative;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-}
+.flash-container{position:fixed;top:64px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:500}
+.flash{padding:8px 14px;border-radius:var(--radius);font-size:.8rem;font-weight:500;color:#fff}
+.flash.success{background:#2E8B57}.flash.error{background:#B23B3B}
 
-/* your existing image+canvas rules */
-#imageContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  max-width: 800px;
-}
-#currentImage {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  object-fit: contain;
-  z-index: 1;
-}
-#drawingCanvas {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  cursor: crosshair;
-  z-index: 2;
-}
-.no-image {
-  font-size: var(--h1-font-size);
-  color: var(--text-light);
-  text-align: center;
-}
+/* centred workspace */
+.canvas-wrapper{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden;position:relative}
 
-/*────────────────────────────────────────────────────────
-  Controls stay fixed at bottom
-────────────────────────────────────────────────────────*/
-.draw-controls {
-  position: relative;
-  flex-shrink: 0;
-  height: 4rem; /* room for buttons */
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 1rem;
-  background: var(--bg-color);
-}
-.draw-btn {
-  background: var(--secondary);
-  color: #fff;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background .2s;
-}
-.draw-btn:hover { background: var(--primary); }
+#imageContainer{position:relative;width:auto;height:auto;max-width:900px;max-height:90vh}
+#currentImage{display:block;width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:var(--radius);pointer-events:none}
+#drawingCanvas{position:absolute;inset:0;border-radius:var(--radius);background:transparent;cursor:crosshair}
+
+.draw-controls{height:64px;background:var(var(--bg));border-top:1px solid var(--border);flex-shrink:0;display:flex;justify-content:flex-end;align-items:center;gap:16px;padding:0 var(--gap)}
+.draw-btn{background:var(--brand);color:#fff;border:none;border-radius:var(--radius);padding:8px 18px;font-weight:600;font-size:.85rem;cursor:pointer;transition:.15s}
+.draw-btn:hover{background:var(--brand-light)}
+.undo-btn{background:var(--panel);border:1px solid var(--brand);color:var(--brand)}
+.undo-btn:hover{background:var(--brand);color:#fff}

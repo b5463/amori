@@ -1,98 +1,120 @@
 {% extends 'base.html' %}
+
 {% block extra_css %}
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <!-- Font Awesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 {% endblock %}
 
 {% block body %}
 <div class="admin-layout">
 
-  <!-- SIDEBAR -->
+  <!-- ▸ SIDEBAR -->
   <aside class="admin-sidebar">
-    <div class="sidebar-logo">CosyPOS Admin</div>
+    <div class="sidebar-logo">amori&nbsp;POS</div>
     <nav class="sidebar-nav">
-      <a href="{{ url_for('admin') }}"
-         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">
-        <span class="icon">🏠</span>Home
-      </a>
-      <a href="{{ url_for('upload') }}"
-         class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">
-        <span class="icon">✏️</span>Draw
-      </a>
-      <a href="{{ url_for('admin_ratings') }}"
-         class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">
-        <span class="icon">⭐</span>Manage Ratings
-      </a>
-      <a href="{{ url_for('guest_table') }}"
-         class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">
-        <span class="icon">👥</span>Guests
-      </a>
+      <a href="{{ url_for('admin') }}"         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('upload') }}"        class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">Draw</a>
+      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">Courses</a>
+      <a href="{{ url_for('guest_table') }}"   class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">Guests</a>
     </nav>
   </aside>
 
-  <!-- MAIN PANEL -->
+  <!-- ▸ MAIN PANEL -->
   <main class="admin-main">
 
-    <!-- TOP CONTROLS -->
-    <div class="controls">
-      <a href="{{ url_for('admin_export') }}" class="btn">Download JSON</a>
-      <form action="{{ url_for('upload') }}" method="POST"
-            enctype="multipart/form-data" class="inline-form">
-        <input id="baseFile" type="file" name="file" accept="image/*" hidden
-               onchange="this.form.submit()">
-        <button type="button" class="btn"
-                onclick="document.getElementById('baseFile').click()">
-          Upload New Menu
-        </button>
-      </form>
-      <form action="{{ url_for('toggle_menu') }}" method="POST"
-            class="inline-form">
-        <button type="submit" class="btn">
-          {{ 'Unpublish Menu' if menu_available else 'Publish Menu' }}
-        </button>
-      </form>
+    <!-- Top-bar -->
+    <div class="top-bar">
+      <div class="controls">
+        <a href="{{ url_for('admin_export') }}" class="btn-outline">Download&nbsp;JSON</a>
+
+        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" class="inline-form">
+          <input id="baseFile" type="file" name="file" accept="image/*" hidden onchange="this.form.submit()">
+          <button type="button" class="btn-outline" onclick="document.getElementById('baseFile').click()">Upload&nbsp;Menu</button>
+        </form>
+
+        <form action="{{ url_for('toggle_menu') }}" method="POST" class="inline-form">
+          <button type="submit" class="btn-outline">{{ 'Unpublish Menu' if menu_available else 'Publish Menu' }}</button>
+        </form>
+      </div>
+
+      <label class="top-search">
+        <i class="fa-solid fa-search"></i>
+        <input type="search" placeholder="Search">
+      </label>
+
+      <input type="date" class="date-picker">
     </div>
 
-    <!-- METRICS ROW -->
-    <section class="metrics-row">
-      <div class="metric-card">
-        <div class="metric-title">Guests</div>
-        <div class="metric-value">{{ guests|length }}</div>
+    <!-- Page title -->
+    <h1 class="page-title">Dashboard</h1>
+
+    <!-- ROW 1 · Metric tiles -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        <div class="stat-title">Guests</div>
+        <div class="stat-value">{{ guests|length }}</div>
       </div>
-      <div class="metric-card">
-        <div class="metric-title">Surveys ≥5 steps</div>
-        <div class="metric-value">{{ completed_surveys }}</div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="stat-title">Courses</div>
+        <div class="stat-value">{{ courses|length }}</div>
       </div>
-      <div class="metric-card">
-        <div class="metric-title">Drinks</div>
-        <div class="metric-value">{{ settings.drink_options|length }}</div>
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-mug-hot"></i></div>
+        <div class="stat-title">Drinks</div>
+        <div class="stat-value">{{ settings.drink_options|length }}</div>
       </div>
-      <div class="metric-card">
-        <div class="metric-title">Last Upload</div>
-        <div class="metric-value">
+
+      <div class="stat-card">
+        <div class="stat-icon"><i class="fa-solid fa-file-upload"></i></div>
+        <div class="stat-title">Last&nbsp;Upload</div>
+        <div class="stat-value">
           {% if previews and previews[0].url %}
             {{ previews[0].url.split('/')[-1] }}
-          {% else %}—{% endif %}
+          {% else %}
+            &mdash;
+          {% endif %}
         </div>
       </div>
     </section>
 
-    <!-- SECTION TABS -->
-    <div class="admin-tabs">
-      <button class="tab-button active" data-tab="drinks">Drink Manager</button>
-      <button class="tab-button" data-tab="menus">Menu Previews</button>
-      <button class="tab-button" data-tab="courses">Courses</button>
-    </div>
+    <!-- ROW 2 · Guests | Drink-manager -->
+    <section class="panel-grid-4">
 
-    <!-- TAB: DRINK MANAGER -->
-    <section id="drinks" class="tab-content active">
-      <div class="drink-manager">
+      <!-- Guests panel -->
+      <section class="panel guests-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Guests</h2>
+          <a href="{{ url_for('guest_table') }}" class="see-all">See&nbsp;more</a>
+        </div>
+
+        <ul class="guest-list">
+          {% for name, g in guests.items() %}
+          <li class="guest-row">
+            <span class="guest-avatar">{{ loop.index }}</span>
+            <div class="guest-info">
+              <strong>{{ name }}</strong>
+              <small class="guest-id">SEATING:&nbsp;{{ g.seating }}</small>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
+
+      <!-- Drink Manager -->
+      <section class="panel drink-mini">
+        <h2 class="panel-title">Drink Manager</h2>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             <ul class="flash-messages">
               {% for cat, msg in messages %}
-                <li class="flash-{{cat}}">{{ msg }}</li>
+                <li class="flash-{{ cat }}">{{ msg }}</li>
               {% endfor %}
             </ul>
           {% endif %}
@@ -100,79 +122,48 @@
 
         <form action="{{ url_for('add_drink') }}" method="POST" class="drink-form">
           <input type="text" name="drink" placeholder="New drink name…" required>
-          <button type="submit" class="btn">Add</button>
+          <button type="submit" class="btn-primary">Add</button>
         </form>
 
         {% if settings.drink_options %}
-        <details class="drink-details">
+        <details class="drink-details" open>
           <summary>Existing Drinks</summary>
           <ul class="drink-list">
             {% for d in settings.drink_options %}
             <li>
               {{ d }}
-              <form action="{{ url_for('delete_drink', drink=d) }}"
-                    method="POST" class="inline-delete-form">
-                <button class="inline-delete">×</button>
+              <form action="{{ url_for('delete_drink', drink=d) }}" method="POST" class="inline-delete-form">
+                <button class="inline-delete">&times;</button>
               </form>
             </li>
             {% endfor %}
           </ul>
         </details>
         {% endif %}
-      </div>
-    </section>
+      </section>
 
-    <!-- TAB: MENU PREVIEWS -->
-    <section id="menus" class="tab-content">
-      <div class="previews-section">
-        <div class="previews-grid">
-          {% for p in previews %}
-          <div class="preview">
-            <strong>{{ p.name }}</strong>
-            <img src="{{ p.url }}" alt="{{ p.name }} preview">
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB: COURSES -->
-    <section id="courses" class="tab-content">
-      <div class="previews-section">
-        <div class="previews-grid">
-          {% for c in courses %}
-          <div class="preview">
-            <strong>Order {{ c.order }}</strong>
-            <div>{{ c.name }}</div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
+    </section><!-- /panel-grid -->
 
   </main>
 </div>
 {% endblock %}
+
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 <script>
-  // flash auto-clear
-  setTimeout(()=>{
-    document.querySelectorAll('.flash-messages li')
-            .forEach(li=>li.remove());
-  },1500);
-
-  // live image-refresh
-  socket.on('image_updated',()=>setTimeout(()=>location.reload(),300));
-
-  // tabs
-  document.querySelectorAll('.tab-button').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelector('.tab-button.active').classList.remove('active');
-      btn.classList.add('active');
-      document.querySelector('.tab-content.active').classList.remove('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+    const details = document.querySelector('.drink-details');
+    if (details) details.scrollTop = details.scrollHeight;
   });
+
+  setTimeout(() => {
+    document.querySelectorAll('.flash-messages li')
+            .forEach(li => li.remove());
+  }, 1500);
+
+  // live‐reload images & table
+  socket.on('image_updated', () =>
+    setTimeout(() => location.reload(), 300)
+  );
 </script>
 {% endblock %}

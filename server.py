@@ -10,6 +10,7 @@ from flask import (
     send_file, flash, abort
 )
 from flask_socketio import SocketIO, emit
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'C9CFBDDD5AFCBB36C54CC8ACE63AC'
@@ -57,6 +58,17 @@ for path, default in (
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(default, f, indent=2)
 
+def redirect_back(default_endpoint='admin'):
+    """
+    Send the user back to ?next=…  →  referrer  →  default_endpoint
+    Only internal URLs are accepted (security).
+    """
+    target = request.args.get('next') or request.referrer
+    if target:
+        # keep it internal – no open redirects
+        if urlparse(target).netloc == '':
+            return redirect(target)
+    return redirect(url_for(default_endpoint))
 
 # ──────────────────────────────────────────────────
 # Generic JSON I/O helpers
@@ -367,7 +379,7 @@ def toggle_menu():
     settings = load_settings()
     settings['menu_available'] = not settings.get('menu_available', False)
     save_settings(settings)
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 @app.route('/admin/export')
 def admin_export():
@@ -385,7 +397,7 @@ def admin_clear_guests():
         os.remove(path)
     flash("All guests and personal menus have been removed.", "success")
     socketio.emit('image_updated', {'last_modified': None, 'guest': None})
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 @app.route('/admin/menu_for/<name>/create', methods=['POST'])
 def admin_create_menu(name):
@@ -399,7 +411,7 @@ def admin_create_menu(name):
         flash(f"Personal menu created for {name}.", "success")
         ts = os.path.getmtime(guest_fp)
         socketio.emit('image_updated', {'last_modified': ts, 'guest': name})
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 @app.route('/admin/menu_for/<name>/delete', methods=['POST'])
 def admin_delete_menu(name):
@@ -411,7 +423,7 @@ def admin_delete_menu(name):
         socketio.emit('image_updated', {'last_modified': None, 'guest': name})
     else:
         flash(f"No personal menu existed for {name}.", "error")
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 @app.route('/admin/courses', methods=['POST'])
 def admin_add_course():
@@ -419,13 +431,13 @@ def admin_add_course():
     order = request.form.get('order', type=int)
     if not name or order is None:
         flash("Both name & order are required", "error")
-        return redirect(url_for('admin'))
+        return redirect_back()
     courses = load_courses()
     new_id = max([c['id'] for c in courses], default=0) + 1
     courses.append({'id': new_id, 'name': name, 'order': order})
     save_courses(courses)
     flash(f"Added course “{name}”", "success")
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 @app.route('/admin/courses/<int:cid>/delete', methods=['POST'])
 def admin_delete_course(cid):
@@ -433,7 +445,7 @@ def admin_delete_course(cid):
     courses = [c for c in courses if c['id'] != cid]
     save_courses(courses)
     flash("Course removed", "success")
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 # ────────────────────────────────────────────
 # New: Guests Table View
@@ -442,10 +454,62 @@ def admin_delete_course(cid):
 def guest_table():
     guests = load_guests()
     settings = load_settings()
+    previews = []
+
+    base_fp = os.path.join(app.config['UPLOAD_FOLDER'], 'current.jpg')
+    if os.path.exists(base_fp):
+        previews.append({
+            'name': 'Base',
+            'url': url_for('static', filename='uploads/current.jpg')
+        })
+
+    for name in guests:
+        guest_fn = f'current_{name}.jpg'
+        guest_fp = os.path.join(app.config['UPLOAD_FOLDER'], guest_fn)
+        if os.path.exists(guest_fp):
+            previews.append({
+                'name': name,
+                'url': url_for('static', filename=f'uploads/{guest_fn}')
+            })
     return render_template(
         'guest_table.html',
         settings=settings,
         guests=guests,
+        hide_nav=True,
+        previews=previews
+    )
+    
+# Place this near your other admin routes in server.py
+@app.route('/admin/menu')
+def admin_menu():
+    # Reuse existing admin data loaders instead of new metrics
+    guests         = load_guests()
+    settings       = load_settings()
+    menu_available = settings.get('menu_available', False)
+
+    # Collect previews (same as in /admin)
+    previews = []
+    base_fp = os.path.join(app.config['UPLOAD_FOLDER'], 'current.jpg')
+    if os.path.exists(base_fp):
+        previews.append({ 'name': 'Base', 'url': url_for('static', filename='uploads/current.jpg') })
+    for name in guests:
+        guest_fn = f'current_{name}.jpg'
+        guest_fp = os.path.join(app.config['UPLOAD_FOLDER'], guest_fn)
+        if os.path.exists(guest_fp):
+            previews.append({ 'name': name, 'url': url_for('static', filename=f'uploads/{guest_fn}') })
+
+    # Load courses and survey stats
+    courses = load_courses()
+    num_courses  = len(courses)
+    
+    return render_template(
+        'admin_menu.html',
+        guests=guests,
+        settings=settings,
+        menu_available=menu_available,
+        previews=previews,
+        courses=courses,
+        num_courses=num_courses,
         hide_nav=True
     )
 
@@ -480,7 +544,8 @@ def admin_ratings():
         'admin_ratings.html',
         courses=courses,
         ratings=ratings,
-        course_map=course_map
+        course_map=course_map,
+        hide_nav=True
     )
 
 @app.route('/admin/clear_ratings', methods=['POST'])
@@ -504,7 +569,7 @@ def add_drink():
         flash(f'Added drink “{new}”.', 'success')
     else:
         flash('Invalid or duplicate drink.', 'error')
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 @app.route('/admin/drinks/<drink>/delete', methods=['POST'])
 def delete_drink(drink):
@@ -515,21 +580,12 @@ def delete_drink(drink):
         flash(f'Removed drink “{drink}”.', 'success')
     else:
         flash('Drink not found.', 'error')
-    return redirect(url_for('admin'))
+    return redirect_back()
 
 
 # ─────────────────────────────────────────────────────────────
 # 8) Menu Lookup & Personalized Menu
 # ─────────────────────────────────────────────────────────────
-@app.route('/menu', methods=['GET'])
-def menu_lookup():
-    if not load_settings().get('menu_available', False):
-        return render_template('menu_unavailable.html', hide_nav=True)
-    guests = load_guests()
-    return render_template('menu_lookup.html',
-                           guests=guests,
-                           hide_nav=True)
-
 @app.route('/menu/<name>')
 def view_menu(name):
     settings = load_settings()

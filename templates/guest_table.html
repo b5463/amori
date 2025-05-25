@@ -1,76 +1,115 @@
 {% extends 'base.html' %}
+
 {% block extra_css %}
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+  <!-- Core font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Shared dashboard styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Page-specific tweaks -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/guest_table.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="admin-layout">
 
-  <!-- SIDEBAR (same as admin.html) -->
+  <!-- ▸ SIDEBAR -->
   <aside class="admin-sidebar">
-    <div class="sidebar-logo">CosyPOS Admin</div>
+    <div class="sidebar-logo">amori&nbsp;POS</div>
     <nav class="sidebar-nav">
-      <a href="{{ url_for('admin') }}"
-         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">
-        <span class="icon">🏠</span>Home
-      </a>
-      <a href="{{ url_for('upload') }}"
-         class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">
-        <span class="icon">✏️</span>Draw
-      </a>
-      <a href="{{ url_for('admin_ratings') }}"
-         class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">
-        <span class="icon">⭐</span>Manage Ratings
-      </a>
-      <a href="{{ url_for('guest_table') }}"
-         class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">
-        <span class="icon">👥</span>Guests
-      </a>
+      <a href="{{ url_for('admin') }}"         class="sidebar-link">Home</a>
+      <a href="{{ url_for('upload') }}"        class="sidebar-link">Draw</a>
+      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link">Courses</a>
+      <a href="{{ url_for('guest_table') }}"   class="sidebar-link active">Guests</a>
     </nav>
   </aside>
 
-  <!-- MAIN PANEL -->
+  <!-- ▸ MAIN PANEL -->
   <main class="admin-main">
 
-    <!-- CLEAR ALL BUTTON -->
+    <h1 class="page-title">Guests</h1>
+
+    <!-- Remove-all button -->
     <div class="controls">
-      <form action="{{ url_for('admin_clear_guests') }}" method="POST"
+      <form action="{{ url_for('admin_clear_guests', next=request.path) }}"
+            method="POST"
             onsubmit="return confirm('Remove ALL guests?');">
         <button type="submit" class="btn">Remove All Guests</button>
       </form>
     </div>
 
-    <!-- GUEST CARDS GRID -->
+    <!-- Guest cards -->
     <div class="guest-cards">
       {% set pastels = ['#CFDDBB','#E4CDED','#C2DBE9','#F1C8D0','#C9CAEF'] %}
       {% for name, g in guests.items() %}
-      <div class="guest-card"
-           style="border-left-color:{{ pastels[loop.index0 % pastels|length] }}">
+      <div class="guest-card" style="border-left-color:{{ pastels[loop.index0 % pastels|length] }}">
         <h3>{{ name }}</h3>
+
         <p><strong>Allergies:</strong> {{ g.allergies|join(', ') or '—' }}</p>
         <p><strong>Avoid:</strong> {{ g.avoid or '—' }}</p>
         <p><strong>Diet:</strong> {{ g.diet or '—' }}</p>
-        <p><strong>Drinks?</strong> {{ g.will_drink and 'Yes' or 'No' }}</p>
+        <p><strong>Drinks?</strong> {{ 'Yes' if g.will_drink else 'No' }}</p>
         <p><strong>Intensity:</strong> {{ g.intensity or '—' }}</p>
         <p><strong>Likes:</strong> {{ g.likes or '—' }}</p>
         <p><strong>Notes:</strong> {{ g.notes or '—' }}</p>
         <p><strong>Seating:</strong> {{ g.seating or '—' }}</p>
         <p><strong>Assigned:</strong> {{ g.assigned_drink or '—' }}</p>
+
+        <select class="assign-drink" data-guest="{{ name }}">
+          <option value="">(None)</option>
+          {% for opt in settings.drink_options %}
+            <option value="{{ opt }}" {% if g.assigned_drink == opt %}selected{% endif %}>{{ opt }}</option>
+          {% endfor %}
+        </select>
+
         <div class="actions">
-          <form action="{{ url_for('admin_create_menu', name=name) }}" method="POST">
+          <form action="{{ url_for('admin_create_menu',
+                                   name=name,
+                                   next=request.path) }}"
+                method="POST">
             <button class="btn">Gen</button>
           </form>
-          <form action="{{ url_for('admin_delete_menu', name=name) }}" method="POST">
+
+          <form action="{{ url_for('admin_delete_menu',
+                                   name=name,
+                                   next=request.path) }}"
+                method="POST">
             <button class="btn">Clr</button>
           </form>
+
           <a href="{{ url_for('upload', guest=name) }}" class="btn">✏️</a>
         </div>
       </div>
       {% endfor %}
-    </div>
+    </div><!-- /guest-cards -->
+
+    <!-- Menu previews -->
+    <section class="menu-previews">
+      <div class="previews-grid">
+        {% for p in previews %}
+          <div class="preview">
+            <strong>{{ p.name }}</strong>
+            <img src="{{ p.url }}" alt="{{ p.name }} preview">
+          </div>
+        {% endfor %}
+      </div>
+    </section>
 
   </main>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  // Live-reload helpers (unchanged)
+  document.querySelectorAll(
+    '.controls__button:not(.no-reload):not(.removal), \
+     .inline-delete, .drink-form button, .responses-table select'
+  ).forEach(el => {
+    const ev = el.tagName === 'SELECT' ? 'change' : 'click';
+    el.addEventListener(ev, () => setTimeout(() => location.reload(), 300));
+  });
+</script>
 {% endblock %}

@@ -1,103 +1,40 @@
-{# templates/menu.html #}
 {% extends 'base.html' %}
 {% block title %}Menu – {{ name }}{% endblock %}
 
 {% block extra_css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/survey.css') }}">
-  <style>
-    /* full‐screen wrapper */
-    .menu-wizard .page-container.full-screen {
-      background: var(--card-bg);
-    }
-    .menu-wizard .wizard-card {
-      background: var(--card-bg);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      max-width: 428px;
-      margin: 0 auto;
-      padding: 0;
-      overflow: hidden;
-    }
-    /* slim header */
-    .menu-wizard .wizard-header {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      background: var(--card-bg);
-    }
-    .menu-wizard .back-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 1.8rem; height: 1.8rem;
-      padding: 0;
-    }
-    .menu-wizard .back-btn img {
-      width: 100%; height: auto;
-    }
-    /* full‐screen image */
-    .menu-wizard .menu-container {
-      flex: 1;
-      background: var(--card-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    .menu-wizard .menu-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-    /* bottom drink bar */
-    .menu-wizard .bottom-bar {
-      background: var(--card-bg);
-      padding: 1rem 1.5rem;
-      text-align: center;
-      border-top: 1px solid var(--track);
-    }
-    .menu-wizard .assigned-drink {
-      margin: 0;
-      font-size: 1rem;
-      color: var(--text-dark);
-    }
-    .menu-wizard .assigned-drink strong {
-      color: var(--accent);
-    }
-    @media (max-width: 400px) {
-      .menu-wizard .wizard-header { padding: 0.5rem 0.75rem; }
-      .menu-wizard .bottom-bar { padding: 0.75rem 1rem; }
-      .menu-wizard .assigned-drink { font-size: 0.9rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/user_menu.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="page-container full-screen menu-wizard">
-  <div class="wizard-card">
-    <div class="wizard-header">
-      <button type="button" class="back-btn" onclick="history.back()">
-        <img src="{{ url_for('static', filename='icons/backarrow.svg') }}" alt="Back">
-      </button>
-    </div>
-    <div class="menu-container">
-      {% if menu_image %}
-        <img src="{{ url_for('static', filename=menu_image) }}"
-             alt="Menu for {{ name }}">
-      {% else %}
-        <p style="padding:1rem; color:var(--text-light); text-align:center;">
-          The menu isn’t uploaded yet. Please check back later.
-        </p>
-      {% endif %}
-    </div>
-    <div class="bottom-bar">
-      <p class="assigned-drink">
-        Your drink today: <strong>{{ assigned_drink or '(none)' }}</strong>
+<div class="menu-page">
+
+  <!-- top bar -->
+  <header class="menu-header">
+    <button class="back-btn" type="button" onclick="history.back()">
+      <img src="{{ url_for('static', filename='icons/backarrow.svg') }}" alt="Back">
+    </button>
+  </header>
+
+  <!-- centered menu image -->
+  <div class="menu-content">
+    {% if menu_image %}
+      <img src="{{ url_for('static', filename=menu_image) }}"
+           alt="Menu for {{ name }}">
+    {% else %}
+      <p style="color: var(--muted); text-align: center;">
+        The menu isn’t uploaded yet. Please check back later.
       </p>
-    </div>
+    {% endif %}
   </div>
+
+  <!-- bottom drink bar -->
+  <footer class="drink-bar">
+    <p>
+      Your drink today:
+      <strong>{{ assigned_drink or '(none)' }}</strong>
+    </p>
+  </footer>
+
 </div>
 {% endblock %}
 
@@ -105,22 +42,13 @@
   <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
   <script>
     const socket = io();
-    console.log("[menu] socket connected?", socket.connected);
-    socket.on('connect', () => {
-      console.log("[menu] connected to server as {{ name|e }}");
-    });
-    socket.on('rate_course', payload => {
-      console.log("[menu] ‹rate_course› event received:", payload);
-      // sanity‐check payload.course_id exists
-      if (!payload || !payload.course_id) {
-        console.error("[menu] bad payload:", payload);
-        return;
+    socket.on('rate_course', p => {
+      if (p && p.course_id) {
+        location.href = `/rate/${p.course_id}/{{ name|urlencode }}`;
       }
-      window.location.href = `/rate/${payload.course_id}/{{ name|urlencode }}`;
     });
-    socket.on('stop_rating', () => {
-      console.log("[menu] ‹stop_rating› event, going back");
-      window.location.href = `/menu/{{ name|urlencode }}`;
-    });
+    socket.on('stop_rating', () =>
+      location.href = `/menu/{{ name|urlencode }}`
+    );
   </script>
 {% endblock %}
