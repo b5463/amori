@@ -1,0 +1,207 @@
+/*────────────────────────────────────────────────────────
+  CosyPOS – Table Management (v3)
+────────────────────────────────────────────────────────*/
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* 1 · Container & card sizing */
+.table-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--gap);
+}
+
+.table-card {
+  position: relative;
+  /* fluid width: up to 440px, down to 90vw */
+  width: min(90vw, 440px);
+  aspect-ratio: 1 / 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: visible; /* so seats can poke out */
+}
+
+/* 2 · Inner table */
+.table-center {
+  position: absolute;
+  /* inset 25% on all sides → 50% width/height */
+  inset: 25%;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* 3 · Seat base */
+.seat {
+  position: absolute;           /* keep your positioning logic */
+  width: 120px;                 /* tweak to your taste */
+  padding: 1rem;
+  background: #1e1e1e;          /* deep charcoal */
+  border-radius: 0.5rem;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+  overflow: hidden;             /* for the accent stripe */
+}
+/* ──────────────────────────────────────────
+   Seat Card “Just Right” Overrides
+   Only touching .seat & its ::before
+────────────────────────────────────────── */
+
+.seat {
+  /* fluid-but-bounded width */
+  width: clamp(140px, 16vw, 150px);
+  min-width: 140px;
+  max-width: 150px;
+  
+  /* moderate padding & left-aligned content */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  
+  /* softer panel with a subtle frame */
+  background: var(--panel-alt);
+  border-radius: 10px;
+  box-shadow:
+    inset 0 1px 4px rgba(0,0,0,0.25),
+    0 3px 8px rgba(0,0,0,0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seat:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,0.2),
+    0 5px 14px rgba(0,0,0,0.5);
+}
+
+.seat::before {
+  width: 0.4rem;                   /* balanced stripe */
+  background: var(--accent-color);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+/* tidy up the internals */
+.seat-label {
+  width: 100%;
+  margin-bottom: 0.6rem;
+  padding-bottom: 0.25rem;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand);
+}
+
+.guest-name {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* center within the flex column */
+  align-self: center;
+  /* ensure the text inside is centered */
+  text-align: center;
+  /* full width so text-align works */
+  width: 100%;
+}
+
+.field {
+  display: grid;
+  /* make the first column exactly 9ch (≈ width of “Assigned:”) */
+  grid-template-columns: 8.5ch auto;
+  align-items: center;     /* vertical centering */
+  margin-bottom: 0.6rem;
+}
+
+.field-label { color: #8a8a92; }
+.field-value { font-weight: 500; }
+
+/* preserve mobile stacking behavior */
+@media (max-width: 500px) {
+  .seat {
+    width: 80%;
+    max-width: none;
+    padding: 0.9rem 0.75rem;
+  }
+}
+
+/* 4. Map seat-label class → accent colour */
+.seat-A { --accent-color: var(--seat-A-accent); }
+.seat-B { --accent-color: var(--seat-B-accent); }
+.seat-C { --accent-color: var(--seat-C-accent); }
+
+
+/* 4 · Seat positioning (percent offsets) */
+/* ── Seat positioning v4: A & B on top, C on right ── */
+/* A & B pinned above the table-card */
+.seat-A,
+.seat-B {
+  position: absolute;
+  top: 0;               /* flush with the top edge of the table-card */
+  transform: translate(-50%, -120%);  /* center horizontally, then pull above */
+}
+
+.seat-A {
+  left: 25%;           /* 30% across the table-card */
+}
+
+.seat-B {
+  left: 75%;           /* 70% across → further apart */
+}
+
+.seat-C {
+  /* vertically centered */
+  top: 50%;
+  /* put it just outside the right edge of .table-card */
+  left: calc(100% + 1.5rem);
+  transform: translateY(-50%);
+}
+
+.table-container {
+  /* push the entire table (and its seats) down */
+  margin-top: 5rem;   /* tweak as needed: 1rem–3rem */
+}
+
+.table-card {
+  margin-top: 3rem;   /* lifts the inner table down inside its container */
+}
+
+
+/* 5 · Adjust on medium screens */
+@media (max-width: 768px) {
+  .seat {
+    width: 32%;
+    padding: 0.7em 0.9em;
+  }
+  .seat-A { left: 10%; }
+  .seat-B { right: 10%; }
+}
+
+/* 6 · Mobile: stack everything vertically */
+@media (max-width: 500px) {
+  .table-container {
+    flex-direction: column;
+  }
+
+  .seat, .table-center {
+    /* let them flow normally in document order */
+    position: static;
+    transform: none;
+    margin: 0.5em 0;
+    width: 80%;
+    max-width: none;
+  }
+
+  .table-center {
+    /* maintain square ratio */
+    aspect-ratio: 1 / 1;
+  }
+}

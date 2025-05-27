@@ -30,12 +30,98 @@
 /* centred workspace */
 .canvas-wrapper{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden;position:relative}
 
-#imageContainer{position:relative;width:auto;height:auto;max-width:900px;max-height:90vh}
-#currentImage{display:block;width:100%;height:auto;max-height:90vh;object-fit:contain;border-radius:var(--radius);pointer-events:none}
-#drawingCanvas{position:absolute;inset:0;border-radius:var(--radius);background:transparent;cursor:crosshair}
+#imageContainer {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#currentImage {
+  display: block;
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius);
+  pointer-events: none;
+}
+
+#drawingCanvas {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  background: transparent;
+  cursor: crosshair;
+}
+
 
 .draw-controls{height:64px;background:var(var(--bg));border-top:1px solid var(--border);flex-shrink:0;display:flex;justify-content:flex-end;align-items:center;gap:16px;padding:0 var(--gap)}
 .draw-btn{background:var(--brand);color:#fff;border:none;border-radius:var(--radius);padding:8px 18px;font-weight:600;font-size:.85rem;cursor:pointer;transition:.15s}
 .draw-btn:hover{background:var(--brand-light)}
 .undo-btn{background:var(--panel);border:1px solid var(--brand);color:var(--brand)}
 .undo-btn:hover{background:var(--brand);color:#fff}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 26px 26px;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.sidebar-logo img {
+  display: block;
+  width: 54px;
+  height: auto;
+}
+
+html, body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+  touch-action: none;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg); /* just in case default white leaks */
+}
+
+.draw-layout {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.draw-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+.canvas-wrapper {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.draw-controls {
+  flex-shrink: 0;
+  height: 64px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  padding: 0 var(--gap);
+}

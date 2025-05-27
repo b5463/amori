@@ -35,14 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (n < PROGRESS_STEPS) {
       nextBtn.style.display   = 'block';
       finishBtn.style.display = 'none';
-      nextBtn.textContent     = 'Next question';
+      nextBtn.textContent     = 'Ďalšia otázka';
       // always allow Next on step 9 (optional)
       nextBtn.disabled        = (n === PROGRESS_STEPS - 1) ? false : true;
     }
     else if (n === PROGRESS_STEPS) {
       nextBtn.style.display   = 'none';
       finishBtn.style.display = 'block';
-      finishBtn.textContent   = 'Finish';
+      finishBtn.textContent   = 'Hotovo';
       finishBtn.disabled = true;
     }
     else {

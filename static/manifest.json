@@ -1,7 +1,6 @@
 {
   "short_name": "amori",
   "name":       "amori",
-  "start_url":  "/",
   "display":    "standalone",
   "background_color": "#fff",
   "theme_color":      "#fff",

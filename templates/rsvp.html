@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Chef’s Table RSVP{% endblock %}
+{% block title %}RSVP Chef’s Table{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
@@ -14,15 +14,15 @@
 
     <!-- HEADER -->
     <div class="wizard-header">
-      <h1 class="wizard-title">Chef’s Table RSVP</h1>
+      <h1 class="wizard-title">amori RSVP</h1>
       <div class="wizard-subtitle">
-        Seats remaining: <strong>{{ seats }}</strong>
+        Zostávajúce miesta: <strong>{{ seats }}</strong>
       </div>
     </div>
 
     <!-- SINGLE STEP: name entry -->
     <div class="step active" data-step="1">
-      <p class="question-text">What’s your name?</p>
+      <p class="question-text">Ako sa voláš?</p>
       <div class="options-container">
         <form id="rsvp-form"
               action="{{ url_for('rsvp') }}"
@@ -33,7 +33,7 @@
             id="rsvp-name"
             type="text"
             class="rsvp-input"
-            placeholder="Enter your name"
+            placeholder="Zadaj svoje meno"
             {% if seats == 0 %}disabled{% endif %}
             required
             autofocus
@@ -51,13 +51,13 @@
           id="rsvp-next"
           class="next"
           {% if seats == 0 %}disabled{% endif %}
-        >Next →</button>
+        >Ďalej</button>
       </div>
     </div>
 
     {% if seats == 0 %}
     <div class="wizard-note">
-      <em>Sorry, we’re all booked up right now!</em>
+      <em>Prepáč, momentálne sme plne obsadení!</em>
     </div>
     {% endif %}
 

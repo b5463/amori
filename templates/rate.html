@@ -18,8 +18,7 @@
 
     <!-- ► HEADER -->
     <header class="wizard-header">
-      <a href="javascript:history.back()" class="back-link">←</a>
-      <h1 class="wizard-title">Rate: {{ course.name }}</h1>
+      <h1 class="wizard-title">{{ course.id }}. {{ course.name }}</h1>
     </header>
 
     <!-- ► SCROLLING FORM -->
@@ -54,7 +53,7 @@
     <footer class="wizard-footer">
       <button type="submit"
               form="rate-form"
-              class="btn-outline">Submit Feedback</button>
+              class="btn-primary">Submit Feedback</button>
     </footer>
 
   </div>

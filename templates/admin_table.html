@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Table Management{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_table.css') }}">
+  {# If you really want to inline the custom CSS, wrap it in <style>…</style> here. #}
+{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">
+      <img src="{{ url_for('static', filename='icons/icon-192-dark.png') }}" alt="amori logo">
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin') }}"         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('upload') }}"        class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">Draw</a>
+      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">Courses</a>
+      <a href="{{ url_for('guest_table') }}"   class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">Guests</a>
+      <a href="{{ url_for('admin_table') }}"   class="sidebar-link {% if request.endpoint=='admin_table' %}active{% endif %}">Table</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="top-bar">
+      <h1 class="page-title">Table Management</h1>
+    </div>
+
+    <div class="table-container">
+      <div class="table-card">
+
+        {% for seat_label in ['A','B','C'] %}
+          <div class="seat seat-{{ seat_label }}">
+            <div class="seat-label">{{ seat_label }}</div>
+
+            {% for name, g in guests.items() %}
+              {% if g.seating == seat_label %}
+                <div class="guest-name">{{ name }}</div>
+                <div class="field">
+                  <span class="field-label">Drinks?</span>
+                  <span class="field-value">{{ 'Yes' if g.will_drink else 'No' }}</span>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+          </div>
+        {% endfor %}
+
+        <div class="table-center"></div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}

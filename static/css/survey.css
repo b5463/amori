@@ -762,11 +762,11 @@ html, body {
   .dropdown-select,
   .textarea-input,
   .other-textarea {
-    width: 100% !important;
-    max-width: none !important;
+    max-width: 330px !important;
     box-sizing: border-box;
     padding: 1rem !important;
     font-size: 1rem !important;
+    justify-content: flex-start !important;
   }
 
   /* — force a sensible, taller min-height and allow scrolling */
@@ -788,11 +788,6 @@ html, body {
     /* bump the tappable height way up */
     min-height: 8rem;       /* ~224px tall */
     padding: 0 3.2rem;       /* horizontal padding stays the same */
-  }
-
-  /* — dropdown arrow padding so it never gets cut off */
-  .dropdown-select {
-    padding-right: 2.5rem !important;
   }
 
   .rsvp-wizard .wizard-header {

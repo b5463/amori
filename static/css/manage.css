@@ -42,3 +42,17 @@ body{background:var(--bg);color:var(--text);font-family:"Inter",sans-serif;margi
 
 /* responsive stack */
 @media(max-width:600px){.add-course-form{grid-template-columns:1fr;grid-template-rows:auto auto auto}.add-course-form button{width:100%}}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 26px 26px;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.sidebar-logo img {
+  display: block;
+  width: 54px;
+  height: auto;
+}

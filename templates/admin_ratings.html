@@ -13,12 +13,15 @@
 
   <!-- ▸ SIDEBAR -->
   <aside class="admin-sidebar">
-    <div class="sidebar-logo">amori&nbsp;POS</div>
+    <div class="sidebar-logo">
+      <img src="{{ url_for('static', filename='icons/icon-192-dark.png') }}" alt="amori logo">
+    </div>
     <nav class="sidebar-nav">
-      <a href="{{ url_for('admin') }}"         class="sidebar-link">Home</a>
-      <a href="{{ url_for('upload') }}"        class="sidebar-link">Draw</a>
-      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link active">Courses</a>
-      <a href="{{ url_for('guest_table') }}"   class="sidebar-link">Guests</a>
+      <a href="{{ url_for('admin') }}"         class="sidebar-link {% if request.endpoint=='admin' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('upload') }}"        class="sidebar-link {% if request.endpoint=='upload' %}active{% endif %}">Draw</a>
+      <a href="{{ url_for('admin_ratings') }}" class="sidebar-link {% if request.endpoint=='admin_ratings' %}active{% endif %}">Courses</a>
+      <a href="{{ url_for('guest_table') }}"   class="sidebar-link {% if request.endpoint=='guest_table' %}active{% endif %}">Guests</a>
+      <a href="{{ url_for('admin_table') }}"   class="sidebar-link {% if request.endpoint=='admin_table' %}active{% endif %}">Table</a>
     </nav>
   </aside>
 

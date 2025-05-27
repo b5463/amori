@@ -1,31 +1,39 @@
-/* rate.css – uses same tokens as admin.css */
-
-:root {
-  /* you already import admin.css, so tokens are available */
+/* 1) GLOBAL RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-/* full-screen dark backdrop */
+/* don’t forget in your <head>: 
+   <meta name="viewport" content="width=device-width, initial-scale=1"> 
+*/
+
+/* Fullscreen dark backdrop */
 .page-container.full-screen {
-  background: var(--bg);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  box-sizing: border-box;
 }
 
-/* core card */
 .wizard-card {
+  flex: 1;               /* fill the container */
+  width: 100%;           /* no max-width cap */
+  height: 100%;          /* just in case */
   background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 428px;
-  height: 100vh;
+  border: none;          /* optional—remove if you still want a border */
+  border-radius: 0;      /* square corners */
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* header row */
+/* Header row */
 .wizard-header {
   flex-shrink: 0;
   display: flex;
@@ -46,14 +54,14 @@
   color: var(--text);
 }
 
-/* scrolling form area */
+/* Scrolling form area */
 .wizard-body {
-  flex: 1;
+  flex: 1 1 auto;
   overflow-y: auto;
   padding: 0 var(--gap);
 }
 .rate-form {
-  max-width: 100%;
+  width: 100%;
   margin-top: var(--gap);
 }
 .form-row {
@@ -74,7 +82,6 @@
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-sizing: border-box;
   transition: border-color .2s, box-shadow .2s;
 }
 .dropdown-select:focus,
@@ -84,39 +91,57 @@
   box-shadow: 0 0 0 3px rgba(122,111,242,0.2);
 }
 
-/* sticky footer */
+/* Sticky footer */
 .wizard-footer {
   flex-shrink: 0;
   padding: var(--gap);
   border-top: 1px solid var(--border);
   background: var(--bg);
 }
-/* from admin.css, your btn-outline */
-.btn-outline {
-  background: transparent;
+
+/* Button style */
+.btn-primary {
   border: 1px solid var(--brand);
-  color: var(--brand);
   border-radius: var(--radius);
-  padding: 2rem;
+  padding: 1rem;       /* scaled back from 2rem */
   font-weight: 500;
-  font-size: large;
-  background: var(--panel-alt);
+  font-size: 1rem;     /* use rem-based sizing */
   cursor: pointer;
   transition: background .15s, color .15s;
   width: 100%;
 }
-.btn-outline:hover {
+/* Enlarge bottom button */
+.wizard-footer .btn-primary {
+  padding: 1.5rem;       /* was 1rem */
+  font-size: 1.25rem;    /* was 1rem */
+}
+
+.btn-primary:hover {
   background: var(--brand);
   color: #fff;
 }
 
-/* small screens */
-@media (max-width: 400px) {
+/* MOBILE FIRST ADJUSTMENTS */
+@media (max-width: 600px) {
+  .wizard-card { border: 1px solid var(--border); }     /* re-enable border */
+  .wizard-card { border-radius: var(--radius); }         /* re-enable rounding */
   .wizard-header,
   .wizard-footer {
-    padding: 12px;
+    padding: 0.5rem;
   }
-  .wizard-card {
-    height: 100%;
+  .back-link {
+    font-size: 1rem;
+  }
+  .wizard-title {
+    font-size: 1.25rem;
+  }
+  .dropdown-select,
+  .rate-form textarea {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .btn-outline {
+    padding: 0.75rem;
+    font-size: 0.9rem;
   }
 }

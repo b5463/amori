@@ -21,19 +21,20 @@
       <img src="{{ url_for('static', filename=menu_image) }}"
            alt="Menu for {{ name }}">
     {% else %}
-      <p style="color: var(--muted); text-align: center;">
+      <p class="menu-placeholder">
         The menu isn’t uploaded yet. Please check back later.
       </p>
     {% endif %}
   </div>
 
-  <!-- bottom drink bar -->
-  <footer class="drink-bar">
-    <p>
-      Your drink today:
-      <strong>{{ assigned_drink or '(none)' }}</strong>
-    </p>
-  </footer>
+  {% if assigned_drink %}
+    <!-- bottom drink bar -->
+    <footer class="drink-bar">
+      <p>
+        <strong>{{ assigned_drink }}</strong>
+      </p>
+    </footer>
+  {% endif %}
 
 </div>
 {% endblock %}

@@ -447,6 +447,15 @@ def admin_delete_course(cid):
     flash("Course removed", "success")
     return redirect_back()
 
+@app.route('/admin/table')
+def admin_table():
+    guests = load_guests()
+    return render_template(
+      'admin_table.html',
+      guests=guests,
+      hide_nav=True
+    )
+
 # ────────────────────────────────────────────
 # New: Guests Table View
 # ────────────────────────────────────────────
@@ -594,7 +603,7 @@ def view_menu(name):
 
     guests = load_guests()
     if name not in guests:
-        return redirect(url_for('menu_lookup'))
+        return redirect(url_for('index'))
 
     guest_fn = f"current_{name}.jpg"
     guest_fp = os.path.join(app.config['UPLOAD_FOLDER'], guest_fn)

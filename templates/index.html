@@ -1,31 +1,44 @@
 {% extends 'base.html' %}
-{% block title %}Who’s Joining?{% endblock %}
+{% block title %}
+  {% if guests %}
+    Kto sa k nám pridá?
+  {% else %}
+    Rezervácia
+  {% endif %}
+{% endblock %}
 
 {% block extra_css %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/choose.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/rsvp.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="page-container full-screen">
-
-  <section class="choose-card">
-
-    <header>
-      <h1>Who’s Joining?</h1>
-      <p>Tap your name to continue</p>
-    </header>
-
-    <div class="options-grid">
-      {% for name in guests.keys() %}
-        <a href="{{ url_for('view_menu', name=name) }}"
-            class="option-btn">
-          {{ name }}
-        </a>
-      {% endfor %}
+  {% if guests %}
+    <div class="page-container full-screen">
+      <section class="choose-card">
+        <header>
+          <h1>Kto sa k nám pridá?</h1>
+          <p>Ťukni na svoje meno a pokračuj ďalej</p>
+        </header>
+        <div class="options-grid">
+          {% for name in guests.keys() %}
+            <a href="{{ url_for('view_menu', name=name) }}" class="option-btn">
+              {{ name }}
+            </a>
+          {% endfor %}
+        </div>
+      </section>
     </div>
-
-  </section>
-
-</div>
+  {% else %}
+    <div class="page-container full-screen rsvp-only">
+      <div class="rsvp-content">
+        <h1>Nezmeškajte príležitosť</h1>
+        <p>Zarezervujte si miesto medzi prvými</p>
+        <a href="{{ url_for('rsvp') }}" class="btn-outline rsvp-btn">
+          RSVP
+        </a>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

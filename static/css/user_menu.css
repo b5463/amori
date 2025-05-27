@@ -28,7 +28,7 @@ body {
 .menu-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 95vh;
   width: 100vw;
 }
 
@@ -60,11 +60,16 @@ body {
 
 /* Fullscreen menu image */
 .menu-content {
-  flex: 1;
+  position: fixed;         /* lock it to the screen */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--bg);
+  z-index: 1;              /* below the header and footer */
 }
 .menu-content img {
   max-width: 100%;
@@ -77,6 +82,10 @@ body {
   padding: 16px;
   text-align: center;
   background: var(--bg);
+  position: fixed;       /* locks it to the screen */
+  bottom: 0;             /* positions it at the bottom */
+  width: 100%;           /* stretches across the full screen */
+  z-index: 3;            /* ensures it's above other content */
 }
 .drink-bar p {
   margin: 0;
@@ -89,9 +98,27 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 480px) {
-  .menu-header { padding: 12px; }
   .back-btn { width: 32px; height: 32px; }
   .back-btn img { width: 16px; height: 16px; }
   .drink-bar { padding: 12px; }
   .drink-bar p { font-size: 0.9rem; }
+}
+.menu-content img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 26px 26px;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.sidebar-logo img {
+  display: block;
+  width: 54px;
+  height: auto;
 }
